@@ -1,0 +1,299 @@
+// The Tier 2 module contract: a module in its own process, speaking to the app over gRPC.
+// Each service method and message mirrors a Tier 1 method or type in mindseye/pkg/sdk.
+syntax = "proto3";
+
+package mindseye.module.v1;
+
+option go_package = "mindseye/pkg/sdk/proto/modulev1";
+
+// Module is served by the module's process and called by the app.
+service ModuleService {
+  // Info is the first call: the versions are compared, and a module whose major version
+  // differs from the app's is refused.
+  rpc Info(InfoRequest) returns (InfoResponse);
+  rpc Configure(ConfigureRequest) returns (ConfigureResponse);
+  rpc Health(HealthRequest) returns (HealthResponse);
+  // Run streams a snapshot, then deltas, until the app cancels it.
+  rpc Run(RunRequest) returns (stream RunResponse);
+
+  // The optional methods; Info lists which the module implements.
+  rpc Discover(DiscoverRequest) returns (DiscoverResponse);
+  rpc Metrics(MetricsRequest) returns (MetricsResponse);
+  rpc QuerySeries(QuerySeriesRequest) returns (QuerySeriesResponse);
+  rpc QueryEvents(QueryEventsRequest) returns (QueryEventsResponse);
+  rpc Subscribe(SubscribeRequest) returns (stream SubscribeResponse);
+  rpc Search(SearchRequest) returns (SearchResponse);
+}
+
+// Version is the contract's version: a major change breaks compatibility, a minor one adds.
+message Version {
+  uint32 major = 1;
+  uint32 minor = 2;
+}
+
+message InfoRequest {
+  // The version the app speaks.
+  Version host = 1;
+}
+
+message InfoResponse {
+  // The version the module speaks.
+  Version module = 1;
+  string kind = 2;
+  string version = 3;
+  string description = 4;
+  // Optional methods implemented: discover, series, events, subscribe, search.
+  repeated string capabilities = 5;
+}
+
+message ConfigureRequest {
+  string name = 1;
+  // The line of the module's entry in the config file.
+  int32 line = 2;
+  // The entry's options, absent when it has none.
+  YamlNode options = 3;
+}
+
+message ConfigureResponse {}
+
+// YamlNode is a parsed YAML node, with its position in the config file for error messages.
+message YamlNode {
+  uint32 kind = 1;
+  uint32 style = 2;
+  string tag = 3;
+  string value = 4;
+  string anchor = 5;
+  int32 line = 6;
+  int32 column = 7;
+  // Children; an alias node has one, the node it refers to.
+  repeated YamlNode content = 8;
+}
+
+message HealthRequest {}
+
+message HealthResponse {
+  bool disconnected = 1;
+  // The error's message, absent when there is none.
+  optional string error = 2;
+  string note = 3;
+}
+
+message RunRequest {}
+
+// RunResponse is one part of a change set; a large one is sent in parts, joined in order.
+message RunResponse {
+  // The change set replaces everything the module sent before.
+  bool snapshot = 1;
+  ChangeSet change_set = 2;
+  // More parts of this change set follow.
+  bool continued = 3;
+}
+
+message DiscoverRequest {}
+
+message DiscoverResponse {
+  ChangeSet change_set = 1;
+}
+
+message MetricsRequest {}
+
+message MetricsResponse {
+  repeated Metric metrics = 1;
+}
+
+message QuerySeriesRequest {
+  SeriesQuery query = 1;
+}
+
+message QuerySeriesResponse {
+  repeated Series series = 1;
+}
+
+message QueryEventsRequest {
+  EventQuery query = 1;
+}
+
+message QueryEventsResponse {
+  repeated Event events = 1;
+}
+
+message SubscribeRequest {
+  SeriesQuery query = 1;
+}
+
+message SubscribeResponse {
+  repeated Series series = 1;
+}
+
+message SearchRequest {
+  string text = 1;
+  int32 limit = 2;
+}
+
+message SearchResponse {
+  // Entity refs, best match first.
+  repeated string refs = 1;
+}
+
+// ChangeSet is applied in field order: removals, edge removals, upserts, edges, events.
+message ChangeSet {
+  repeated string removes = 1;
+  repeated EdgeKey remove_edges = 2;
+  repeated Entity upserts = 3;
+  repeated Edge edges = 4;
+  repeated Event events = 5;
+}
+
+message Entity {
+  string ref = 1;
+  string kind = 2;
+  string name = 3;
+  map<string, Value> attrs = 4;
+  StatusLevel status = 5;
+  string reason = 6;
+  repeated string tags = 7;
+  string source = 8;
+  // Unix nanoseconds; absent for the zero time.
+  optional sint64 seen = 9;
+}
+
+message EdgeKey {
+  string from = 1;
+  string to = 2;
+  string rel = 3;
+}
+
+message Edge {
+  string from = 1;
+  string to = 2;
+  string rel = 3;
+  double weight = 4;
+  map<string, Value> attrs = 5;
+  string source = 6;
+}
+
+message Event {
+  string id = 1;
+  // Empty for an event about no entity.
+  string entity = 2;
+  // Unix nanoseconds; absent for the zero time.
+  optional sint64 at = 3;
+  Severity severity = 4;
+  string kind = 5;
+  string message = 6;
+  map<string, Value> fields = 7;
+  string source = 8;
+}
+
+// Value is an attribute's value; none is set for an empty value.
+message Value {
+  oneof value {
+    string string_value = 1;
+    double number_value = 2;
+    bool bool_value = 3;
+    // Unix nanoseconds.
+    sint64 time_value = 4;
+    ValueList list_value = 5;
+  }
+}
+
+message ValueList {
+  repeated Value values = 1;
+}
+
+enum StatusLevel {
+  STATUS_LEVEL_UNKNOWN = 0;
+  STATUS_LEVEL_OK = 1;
+  STATUS_LEVEL_WARN = 2;
+  STATUS_LEVEL_CRIT = 3;
+  STATUS_LEVEL_DOWN = 4;
+}
+
+enum Severity {
+  SEVERITY_DEBUG = 0;
+  SEVERITY_INFO = 1;
+  SEVERITY_WARN = 2;
+  SEVERITY_ERROR = 3;
+  SEVERITY_CRITICAL = 4;
+}
+
+message Metric {
+  string name = 1;
+  string unit = 2;
+  string description = 3;
+  // Entity kinds that have the metric; empty means any.
+  repeated string kinds = 4;
+  // The module's own expression.
+  string native = 5;
+  // Chosen by name rather than opened with its entity.
+  bool extra = 6;
+}
+
+message TimeWindow {
+  // Unix nanoseconds; absent for the zero time.
+  optional sint64 from = 1;
+  optional sint64 to = 2;
+}
+
+enum Aggregation {
+  AGGREGATION_NONE = 0;
+  AGGREGATION_AVG = 1;
+  AGGREGATION_MAX = 2;
+  AGGREGATION_MIN = 3;
+  AGGREGATION_SUM = 4;
+  AGGREGATION_P95 = 5;
+}
+
+message SeriesQuery {
+  // Explicit entity refs; otherwise the filter selects them.
+  repeated string entities = 1;
+  Filter filter = 2;
+  repeated string metrics = 3;
+  TimeWindow window = 4;
+  // Resolution hint, in nanoseconds.
+  int64 step = 5;
+  Aggregation agg = 6;
+  // The module's own query language, for power users.
+  string native = 7;
+}
+
+// Filter selects entities as the palette's filter syntax does.
+message Filter {
+  repeated string kinds = 1;
+  repeated string sources = 2;
+  repeated StatusLevel statuses = 3;
+  repeated string metrics = 4;
+  repeated string same_as = 5;
+  repeated string tags = 6;
+  repeated Predicate attrs = 7;
+}
+
+message Predicate {
+  string key = 1;
+  // One of = != < <= > >= ~ has.
+  string op = 2;
+  string value = 3;
+}
+
+message SeriesRef {
+  string entity = 1;
+  string metric = 2;
+}
+
+// Series holds its points as two columns of equal length, in time order.
+message Series {
+  SeriesRef ref = 1;
+  string unit = 2;
+  // Unix nanoseconds.
+  repeated sint64 times = 3;
+  repeated double values = 4;
+}
+
+message EventQuery {
+  repeated string entities = 1;
+  TimeWindow window = 2;
+  Severity min_severity = 3;
+  repeated string kinds = 4;
+  // Most recent first when set.
+  int32 limit = 5;
+}
