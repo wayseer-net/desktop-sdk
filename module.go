@@ -61,3 +61,6 @@ func NewEventLog(n int) *EventLog { return module.NewEventLog(n) }
 
 // CompareEdgeKeys orders edge keys by from, to, then relation.
 func CompareEdgeKeys(a, b EdgeKey) int { return module.CompareEdgeKeys(a, b) }
+
+// Capabilities names the optional interfaces m implements.
+func Capabilities(m Module) []string { return module.Capabilities(m) }
