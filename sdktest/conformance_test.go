@@ -198,3 +198,39 @@ func TestEachFlawFailsItsCheck(t *testing.T) {
 		})
 	}
 }
+
+// withholder has every query method but offers none, as an external module can.
+type withholder struct{ *fake }
+
+func (withholder) Discover(context.Context) (*sdk.ChangeSet, error) {
+	return nil, sdk.NotOffered("discover")
+}
+func (withholder) Metrics() []sdk.Metric { return nil }
+func (withholder) QuerySeries(context.Context, sdk.SeriesQuery) ([]sdk.Series, error) {
+	return nil, sdk.NotOffered("series queries")
+}
+
+func (withholder) QueryEvents(context.Context, sdk.EventQuery) ([]sdk.Event, error) {
+	return nil, sdk.NotOffered("event queries")
+}
+
+func (withholder) Search(context.Context, string, int) ([]sdk.EntityRef, error) {
+	return nil, sdk.NotOffered("search")
+}
+
+func TestQueriesNotOfferedAreSkipped(t *testing.T) {
+	c := fakeCase(t, sound)
+	c.New = func() sdk.Module { return withholder{&fake{}} }
+	for _, r := range Check(c) {
+		switch r.Check {
+		case CheckDiscover, CheckSeries, CheckEvents, CheckSearch:
+			if !errors.Is(r.Err, ErrSkipped) {
+				t.Errorf("%s: %v, want skipped", r.Check, r.Err)
+			}
+		default:
+			if r.Err != nil {
+				t.Errorf("%s: %v", r.Check, r.Err)
+			}
+		}
+	}
+}

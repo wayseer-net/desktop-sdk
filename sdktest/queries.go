@@ -19,6 +19,9 @@ func (s *session) checkSeries(world *model.Snapshot) error {
 	if !ok {
 		return fmt.Errorf("%w: not a SeriesQuerier", ErrSkipped)
 	}
+	if err := s.withheld(func(ctx context.Context) error { _, err := q.QuerySeries(ctx, sdk.SeriesQuery{}); return err }); err != nil {
+		return err
+	}
 	metrics := q.Metrics()
 	if err := checkCatalogue(metrics); err != nil {
 		return err
@@ -103,6 +106,9 @@ func (s *session) checkEvents() error {
 	}
 	now := time.Now()
 	eq := sdk.EventQuery{Window: sdk.TimeWindow{From: now.Add(-queryWindow), To: now.Add(time.Second)}, Limit: 5}
+	if err := s.withheld(func(ctx context.Context) error { _, err := q.QueryEvents(ctx, eq); return err }); err != nil {
+		return err
+	}
 	return errors.Join(
 		s.bounded(func(ctx context.Context) error {
 			got, err := q.QueryEvents(ctx, eq)
@@ -144,6 +150,9 @@ func (s *session) checkSearch(world *model.Snapshot) error {
 		}
 	}
 	const limit = 3
+	if err := s.withheld(func(ctx context.Context) error { _, err := q.Search(ctx, text, limit); return err }); err != nil {
+		return err
+	}
 	return errors.Join(
 		s.bounded(func(ctx context.Context) error {
 			got, err := q.Search(ctx, text, limit)

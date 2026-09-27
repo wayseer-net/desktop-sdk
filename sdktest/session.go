@@ -111,6 +111,9 @@ func (s *session) checkDiscover() error {
 	if !ok {
 		return fmt.Errorf("%w: not a Discoverer", ErrSkipped)
 	}
+	if err := s.withheld(func(ctx context.Context) error { _, err := d.Discover(ctx); return err }); err != nil {
+		return err
+	}
 	return s.bounded(func(ctx context.Context) error {
 		cs, err := d.Discover(ctx)
 		if err != nil {
@@ -123,6 +126,15 @@ func (s *session) checkDiscover() error {
 		_, err = co.Flush()
 		return err
 	})
+}
+
+// withheld is a skip when probe says the module does not offer the query, as an external
+// module's host does for what its process lacks.
+func (s *session) withheld(probe func(context.Context) error) error {
+	if err := s.bounded(probe); errors.Is(err, sdk.ErrNotOffered) {
+		return fmt.Errorf("%w: %v", ErrSkipped, err)
+	}
+	return nil
 }
 
 // bounded runs one query under the case timeout.

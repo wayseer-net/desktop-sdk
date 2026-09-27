@@ -53,6 +53,12 @@ const (
 	FreshError        = data.FreshError
 )
 
+// ErrNotOffered is what a query answers when the module does not offer it; callers skip it.
+var ErrNotOffered = module.ErrNotOffered
+
+// NotOffered is the error for a module that does not offer what, such as "event queries".
+func NotOffered(what string) error { return module.NotOffered(what) }
+
 // Register adds a module kind to the app; call it from the module package's init.
 func Register(kind string, f Factory) { module.Register(kind, f) }
 
