@@ -39,6 +39,26 @@ func TestGoldenFailsWithWhereToFindWhatDiffered(t *testing.T) {
 	}
 }
 
+func TestGoldenSaysTheFirstLineThatDiffers(t *testing.T) {
+	f := &failures{TB: t}
+	Golden(f, "testdata/golden.txt", "hosts: 3\n")
+	if len(f.msgs) != 1 || !strings.Contains(f.msgs[0], `line 1: want "hosts: 2", got "hosts: 3"`) {
+		t.Errorf("%q; want it to name line 1 both ways", f.msgs)
+	}
+}
+
+func TestFirstDiffFindsExtraAndMissingLines(t *testing.T) {
+	for _, c := range []struct{ want, got, says string }{
+		{"a\nb\n", "a\n", `line 2: want "b", got nothing`},
+		{"a\n", "a\nb\n", `line 2: want nothing, got "b"`},
+		{"a\nb\n", "a\nc\n", `line 2: want "b", got "c"`},
+	} {
+		if got := firstDiff(c.want, c.got); got != c.says {
+			t.Errorf("firstDiff(%q, %q) = %q, want %q", c.want, c.got, got, c.says)
+		}
+	}
+}
+
 func TestGoldenUpdateWritesTheFile(t *testing.T) {
 	t.Setenv("UPDATE_SNAPSHOTS", "1")
 	path := filepath.Join(t.TempDir(), "sub", "new.txt")
