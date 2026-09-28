@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"mindseye/internal/kernel"
+	"mindseye/internal/secret"
 	"os"
 	"path/filepath"
 	"strings"
@@ -14,22 +15,40 @@ import (
 type Secret = kernel.Secret
 
 // SecretOptions name where a secret is kept. Embed them in a module's options with
-// `yaml:",inline"` so the config reads secret_file: or secret_env:.
+// `yaml:",inline"` so the config reads secret_file:, secret_env: or secret_keyring:.
 type SecretOptions struct {
-	SecretFile string `yaml:"secret_file"` // a file holding the secret; ~/ is the home directory
-	SecretEnv  string `yaml:"secret_env"`  // or the environment variable holding it
+	SecretFile    string `yaml:"secret_file"`    // a file holding the secret; ~/ is the home directory
+	SecretEnv     string `yaml:"secret_env"`     // or the environment variable holding it
+	SecretKeyring string `yaml:"secret_keyring"` // or the keyring entry holding it, as service/account
 }
 
 // Set reports whether the options name a secret.
-func (o SecretOptions) Set() bool { return o.SecretFile != "" || o.SecretEnv != "" }
+func (o SecretOptions) Set() bool {
+	return o.SecretFile != "" || o.SecretEnv != "" || o.SecretKeyring != ""
+}
+
+// Validate refuses more than one source, or a keyring entry not <service>/<account>.
+func (o SecretOptions) Validate() error {
+	_, err := secret.CheckSources(o.SecretFile, o.SecretEnv, o.SecretKeyring)
+	return err
+}
 
 // Read loads the secret, trimmed of spaces, or nothing when none is named. Errors name where
 // it was sought, never what was read.
 func (o SecretOptions) Read() (Secret, error) {
+	if err := o.Validate(); err != nil {
+		return Secret{}, err
+	}
 	var s string
 	switch {
-	case o.SecretFile != "" && o.SecretEnv != "":
-		return Secret{}, errors.New("set one of secret_file or secret_env, not both")
+	case o.SecretKeyring != "":
+		v, err := secret.Lookup(o.SecretKeyring)
+		if err != nil {
+			return Secret{}, err
+		}
+		if s = strings.TrimSpace(v); s == "" {
+			return Secret{}, fmt.Errorf("secret_keyring: %s is empty", o.SecretKeyring)
+		}
 	case o.SecretEnv != "":
 		v, ok := os.LookupEnv(o.SecretEnv)
 		if !ok {
