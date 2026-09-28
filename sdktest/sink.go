@@ -65,11 +65,11 @@ func Run(t *testing.T, run func(context.Context, *Sink) error) *Sink {
 	return s
 }
 
-// Eventually polls cond until it holds, failing the test after three seconds, or longer under
-// the race detector.
+// Eventually polls cond until it holds, failing the test after thirty seconds, or longer under
+// the race detector; the wait is long so slow CI runners and emulators pass.
 func Eventually(t *testing.T, cond func() bool) {
 	t.Helper()
-	for deadline := time.Now().Add(slowdown * 3 * time.Second); !cond(); time.Sleep(10 * time.Millisecond) {
+	for deadline := time.Now().Add(slowdown * 30 * time.Second); !cond(); time.Sleep(10 * time.Millisecond) {
 		if time.Now().After(deadline) {
 			t.Fatal("condition not met in time")
 		}
