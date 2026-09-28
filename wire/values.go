@@ -11,7 +11,7 @@ func encodeValue(v sdk.Value) *pb.Value {
 	case sdk.TypeString:
 		return &pb.Value{Value: &pb.Value_StringValue{StringValue: v.Str()}}
 	case sdk.TypeNumber:
-		return &pb.Value{Value: &pb.Value_NumberValue{NumberValue: v.Num()}}
+		return &pb.Value{Value: &pb.Value_NumberValue{NumberValue: v.Num()}, Unit: string(v.Unit())}
 	case sdk.TypeBool:
 		return &pb.Value{Value: &pb.Value_BoolValue{BoolValue: v.Bool()}}
 	case sdk.TypeTime:
@@ -27,7 +27,7 @@ func decodeValue(v *pb.Value) sdk.Value {
 	case *pb.Value_StringValue:
 		return sdk.String(x.StringValue)
 	case *pb.Value_NumberValue:
-		return sdk.Number(x.NumberValue)
+		return sdk.Number(x.NumberValue).In(sdk.Unit(v.GetUnit()))
 	case *pb.Value_BoolValue:
 		return sdk.Bool(x.BoolValue)
 	case *pb.Value_TimeValue:

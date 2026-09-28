@@ -1727,7 +1727,9 @@ type Value struct {
 	//	*Value_BoolValue
 	//	*Value_TimeValue
 	//	*Value_ListValue
-	Value         isValue_Value `protobuf_oneof:"value"`
+	Value isValue_Value `protobuf_oneof:"value"`
+	// A number's unit, as a metric's: bytes, seconds, percent and so on; empty for none.
+	Unit          string `protobuf:"bytes,6,opt,name=unit,proto3" json:"unit,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1812,6 +1814,13 @@ func (x *Value) GetListValue() *ValueList {
 		}
 	}
 	return nil
+}
+
+func (x *Value) GetUnit() string {
+	if x != nil {
+		return x.Unit
+	}
+	return ""
 }
 
 type isValue_Value interface {
@@ -2596,7 +2605,7 @@ const file_mindseye_module_v1_module_proto_rawDesc = "" +
 	"\vFieldsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12/\n" +
 	"\x05value\x18\x02 \x01(\v2\x19.mindseye.module.v1.ValueR\x05value:\x028\x01B\x05\n" +
-	"\x03_at\"\xdc\x01\n" +
+	"\x03_at\"\xf0\x01\n" +
 	"\x05Value\x12#\n" +
 	"\fstring_value\x18\x01 \x01(\tH\x00R\vstringValue\x12#\n" +
 	"\fnumber_value\x18\x02 \x01(\x01H\x00R\vnumberValue\x12\x1f\n" +
@@ -2605,7 +2614,8 @@ const file_mindseye_module_v1_module_proto_rawDesc = "" +
 	"\n" +
 	"time_value\x18\x04 \x01(\x12H\x00R\ttimeValue\x12>\n" +
 	"\n" +
-	"list_value\x18\x05 \x01(\v2\x1d.mindseye.module.v1.ValueListH\x00R\tlistValueB\a\n" +
+	"list_value\x18\x05 \x01(\v2\x1d.mindseye.module.v1.ValueListH\x00R\tlistValue\x12\x12\n" +
+	"\x04unit\x18\x06 \x01(\tR\x04unitB\a\n" +
 	"\x05value\">\n" +
 	"\tValueList\x121\n" +
 	"\x06values\x18\x01 \x03(\v2\x19.mindseye.module.v1.ValueR\x06values\"\x96\x01\n" +

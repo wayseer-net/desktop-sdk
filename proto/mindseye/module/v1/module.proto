@@ -195,6 +195,8 @@ message Value {
     sint64 time_value = 4;
     ValueList list_value = 5;
   }
+  // A number's unit, as a metric's: bytes, seconds, percent and so on; empty for none.
+  string unit = 6;
 }
 
 message ValueList {

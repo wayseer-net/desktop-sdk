@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"mindseye/internal/data"
 	"mindseye/pkg/sdk"
+	pb "mindseye/pkg/sdk/proto/modulev1"
 	"reflect"
 	"testing"
 	"testing/quick"
@@ -89,7 +90,7 @@ func randomValue(r *rand.Rand, depth int) sdk.Value {
 	case 1:
 		return sdk.String(fmt.Sprint(r.Int()))
 	case 2:
-		return sdk.Number(r.NormFloat64() * 1e9)
+		return sdk.Number(r.NormFloat64() * 1e9).In([]sdk.Unit{sdk.UnitNone, sdk.UnitBytes, sdk.UnitSeconds}[r.Intn(3)])
 	case 3:
 		return sdk.Bool(r.Intn(2) == 0)
 	case 4:
@@ -272,5 +273,15 @@ func TestRefsRoundTrip(t *testing.T) {
 	refs := []sdk.EntityRef{"m/host/a", "m/host/b"}
 	if got := DecodeRefs(EncodeRefs(refs)); !reflect.DeepEqual(got, refs) {
 		t.Errorf("%v", got)
+	}
+}
+
+// A 1.0 module sends numbers without units, and a newer one may name a unit this app lacks.
+func TestUnitIsOptionalOnTheWire(t *testing.T) {
+	for unit, want := range map[string]sdk.Unit{"": sdk.UnitNone, "bytes": sdk.UnitBytes, "furlongs": sdk.UnitNone} {
+		v := decodeValue(&pb.Value{Value: &pb.Value_NumberValue{NumberValue: 2}, Unit: unit})
+		if v.Num() != 2 || v.Unit() != want {
+			t.Errorf("unit %q decodes as %v in %q, want 2 in %q", unit, v.Num(), v.Unit(), want)
+		}
 	}
 }
