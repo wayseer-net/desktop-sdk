@@ -297,7 +297,8 @@ type InfoResponse struct {
 	Kind        string   `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	Version     string   `protobuf:"bytes,3,opt,name=version,proto3" json:"version,omitempty"`
 	Description string   `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
-	// Optional methods implemented: discover, series, events, subscribe, search.
+	// Optional methods implemented: discover, series, events, subscribe, search, and top (it
+	// honours SeriesQuery.top; since contract 1.2).
 	Capabilities  []string `protobuf:"bytes,5,rep,name=capabilities,proto3" json:"capabilities,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -2053,7 +2054,10 @@ type SeriesQuery struct {
 	Step int64       `protobuf:"varint,5,opt,name=step,proto3" json:"step,omitempty"`
 	Agg  Aggregation `protobuf:"varint,6,opt,name=agg,proto3,enum=mindseye.module.v1.Aggregation" json:"agg,omitempty"`
 	// The module's own query language, for power users.
-	Native        string `protobuf:"bytes,7,opt,name=native,proto3" json:"native,omitempty"`
+	Native string `protobuf:"bytes,7,opt,name=native,proto3" json:"native,omitempty"`
+	// When above zero, a module offering "top" returns at most this many entities per metric:
+	// those with the highest newest value in the window. Since contract 1.2.
+	Top           int32 `protobuf:"varint,8,opt,name=top,proto3" json:"top,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2135,6 +2139,13 @@ func (x *SeriesQuery) GetNative() string {
 		return x.Native
 	}
 	return ""
+}
+
+func (x *SeriesQuery) GetTop() int32 {
+	if x != nil {
+		return x.Top
+	}
+	return 0
 }
 
 // Filter selects entities as the palette's filter syntax does.
@@ -2631,7 +2642,7 @@ const file_mindseye_module_v1_module_proto_rawDesc = "" +
 	"\x04from\x18\x01 \x01(\x12H\x00R\x04from\x88\x01\x01\x12\x13\n" +
 	"\x02to\x18\x02 \x01(\x12H\x01R\x02to\x88\x01\x01B\a\n" +
 	"\x05_fromB\x05\n" +
-	"\x03_to\"\x8e\x02\n" +
+	"\x03_to\"\xa0\x02\n" +
 	"\vSeriesQuery\x12\x1a\n" +
 	"\bentities\x18\x01 \x03(\tR\bentities\x122\n" +
 	"\x06filter\x18\x02 \x01(\v2\x1a.mindseye.module.v1.FilterR\x06filter\x12\x18\n" +
@@ -2639,7 +2650,8 @@ const file_mindseye_module_v1_module_proto_rawDesc = "" +
 	"\x06window\x18\x04 \x01(\v2\x1e.mindseye.module.v1.TimeWindowR\x06window\x12\x12\n" +
 	"\x04step\x18\x05 \x01(\x03R\x04step\x121\n" +
 	"\x03agg\x18\x06 \x01(\x0e2\x1f.mindseye.module.v1.AggregationR\x03agg\x12\x16\n" +
-	"\x06native\x18\a \x01(\tR\x06native\"\xf1\x01\n" +
+	"\x06native\x18\a \x01(\tR\x06native\x12\x10\n" +
+	"\x03top\x18\b \x01(\x05R\x03top\"\xf1\x01\n" +
 	"\x06Filter\x12\x14\n" +
 	"\x05kinds\x18\x01 \x03(\tR\x05kinds\x12\x18\n" +
 	"\asources\x18\x02 \x03(\tR\asources\x12;\n" +

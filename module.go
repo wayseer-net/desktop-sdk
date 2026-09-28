@@ -28,6 +28,8 @@ type (
 	Subscriber = module.Subscriber
 	// Searcher finds the module's entities by free text.
 	Searcher = module.Searcher
+	// TopRanker is a SeriesQuerier that answers SeriesQuery.Top with only the top entities.
+	TopRanker = module.TopRanker
 
 	// Metric is one catalogue entry.
 	Metric = module.Metric

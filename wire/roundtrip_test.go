@@ -222,7 +222,7 @@ func TestSeriesQueriesRoundTrip(t *testing.T) {
 	q := sdk.SeriesQuery{
 		Entities: []sdk.EntityRef{"m/host/h1"}, Filter: f, Metrics: []string{"cpu.utilisation"},
 		Window: sdk.TimeWindow{From: time.Unix(10, 0).UTC(), To: time.Unix(20, 0).UTC()},
-		Step:   15 * time.Second, Agg: sdk.AggP95, Native: "up",
+		Step:   15 * time.Second, Agg: sdk.AggP95, Native: "up", Top: 500,
 	}
 	if got := DecodeSeriesQuery(EncodeSeriesQuery(q)); !reflect.DeepEqual(got, q) {
 		t.Errorf("%+v\nbecame %+v", q, got)

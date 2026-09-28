@@ -2,6 +2,7 @@ package wire
 
 import (
 	"fmt"
+	"math"
 	"mindseye/internal/data"
 	"mindseye/pkg/sdk"
 	pb "mindseye/pkg/sdk/proto/modulev1"
@@ -33,6 +34,7 @@ func EncodeSeriesQuery(q sdk.SeriesQuery) *pb.SeriesQuery {
 	return &pb.SeriesQuery{
 		Entities: convertStrings[string](q.Entities), Filter: encodeFilter(q.Filter), Metrics: q.Metrics,
 		Window: encodeWindow(q.Window), Step: int64(q.Step), Agg: pb.Aggregation(q.Agg), Native: q.Native,
+		Top: int32(min(max(q.Top, 0), math.MaxInt32)),
 	}
 }
 
@@ -42,6 +44,7 @@ func DecodeSeriesQuery(q *pb.SeriesQuery) sdk.SeriesQuery {
 		Entities: convertStrings[sdk.EntityRef](q.GetEntities()), Filter: decodeFilter(q.GetFilter()),
 		Metrics: convertStrings[string](q.GetMetrics()), Window: decodeWindow(q.GetWindow()),
 		Step: time.Duration(q.GetStep()), Agg: sdk.Aggregation(q.GetAgg()), Native: q.GetNative(),
+		Top: int(max(q.GetTop(), 0)),
 	}
 }
 

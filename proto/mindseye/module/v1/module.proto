@@ -42,7 +42,8 @@ message InfoResponse {
   string kind = 2;
   string version = 3;
   string description = 4;
-  // Optional methods implemented: discover, series, events, subscribe, search.
+  // Optional methods implemented: discover, series, events, subscribe, search, and top (it
+  // honours SeriesQuery.top; since contract 1.2).
   repeated string capabilities = 5;
 }
 
@@ -257,6 +258,9 @@ message SeriesQuery {
   Aggregation agg = 6;
   // The module's own query language, for power users.
   string native = 7;
+  // When above zero, a module offering "top" returns at most this many entities per metric:
+  // those with the highest newest value in the window. Since contract 1.2.
+  int32 top = 8;
 }
 
 // Filter selects entities as the palette's filter syntax does.

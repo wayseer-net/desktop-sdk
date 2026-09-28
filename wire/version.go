@@ -9,7 +9,7 @@ import (
 type Version struct{ Major, Minor uint32 }
 
 // Protocol is the contract version this build speaks.
-var Protocol = Version{Major: 1, Minor: 1}
+var Protocol = Version{Major: 1, Minor: 2}
 
 func (v Version) String() string { return fmt.Sprintf("%d.%d", v.Major, v.Minor) }
 
