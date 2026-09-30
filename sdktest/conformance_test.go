@@ -25,6 +25,8 @@ const (
 	searchOverLimit
 	eventsOverLimit
 	unknownUnit
+	invalidAction
+	actsWhenCancelled
 )
 
 type fakeOptions struct {
@@ -154,6 +156,24 @@ func (f *fake) Search(ctx context.Context, _ string, limit int) ([]sdk.EntityRef
 	return out, ctx.Err()
 }
 
+func (f *fake) Actions() []sdk.Action {
+	a := sdk.Action{
+		ID: "scale", Title: "Scale", Changes: "Sets how many run",
+		Kinds: []sdk.Kind{sdk.KindHost}, Params: []sdk.Param{sdk.IntParam("n", "Count", 1, 3)},
+	}
+	if f.flaw == invalidAction {
+		a.Kinds = nil
+	}
+	return []sdk.Action{a}
+}
+
+func (f *fake) Do(ctx context.Context, _ sdk.ActionRequest) (sdk.ActionResult, error) {
+	if f.flaw == actsWhenCancelled {
+		return sdk.ActionResult{Message: "scaled"}, nil
+	}
+	return sdk.ActionResult{}, ctx.Err()
+}
+
 func fakeCase(t *testing.T, fl flaw) Case {
 	release := make(chan struct{})
 	t.Cleanup(func() { close(release) })
@@ -182,6 +202,8 @@ func TestEachFlawFailsItsCheck(t *testing.T) {
 		searchOverLimit:     {CheckSearch},
 		eventsOverLimit:     {CheckEvents},
 		unknownUnit:         {CheckSeries},
+		invalidAction:       {CheckActions},
+		actsWhenCancelled:   {CheckActions},
 	}
 	for fl, want := range cases {
 		t.Run(fmt.Sprint(want), func(t *testing.T) {

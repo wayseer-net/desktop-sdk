@@ -25,7 +25,7 @@ type session struct {
 
 // runSession starts the module, runs the checks that need it live, then cancels it.
 func runSession(c Case) []Result {
-	names := []string{CheckSnapshot, CheckHealthy, CheckDiscover, CheckSeries, CheckEvents, CheckSearch, CheckCancel}
+	names := []string{CheckSnapshot, CheckHealthy, CheckDiscover, CheckSeries, CheckEvents, CheckSearch, CheckActions, CheckCancel}
 	m, err := configured(c, c.Options)
 	if err != nil {
 		return failAll(names, fmt.Errorf("Configure: %w", err))
@@ -44,6 +44,7 @@ func runSession(c Case) []Result {
 		{CheckSeries, s.checkSeries(world)},
 		{CheckEvents, s.checkEvents()},
 		{CheckSearch, s.checkSearch(world)},
+		{CheckActions, s.checkActions(world)},
 		{CheckCancel, s.stop()},
 	}
 }

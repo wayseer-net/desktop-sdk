@@ -56,6 +56,7 @@ func ExampleCheck() {
 	// series-queries       skipped: not a SeriesQuerier
 	// event-queries        skipped: not an EventQuerier
 	// search               skipped: not a Searcher
+	// actions              skipped: not an Actor
 	// cancellation         <nil>
 	// health-errors        skipped: no failing options given
 }

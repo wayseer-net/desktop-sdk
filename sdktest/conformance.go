@@ -33,6 +33,7 @@ const (
 	CheckSeries       = "series-queries"
 	CheckEvents       = "event-queries"
 	CheckSearch       = "search"
+	CheckActions      = "actions"
 	CheckCancel       = "cancellation"
 	CheckHealthErrors = "health-errors"
 )

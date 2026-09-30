@@ -3,6 +3,7 @@ package sdk
 import (
 	"mindseye/internal/data"
 	"mindseye/internal/module"
+	"time"
 )
 
 // The module contract; see the internal package for each method's rules.
@@ -31,6 +32,19 @@ type (
 	// TopRanker is a SeriesQuerier that answers SeriesQuery.Top with only the top entities.
 	TopRanker = module.TopRanker
 
+	// Actor is a module whose entities offer actions the owner may run.
+	Actor = module.Actor
+	// Action is one thing a module can do to an entity, such as restarting it.
+	Action = module.Action
+	// Param is one typed, bounded parameter of an action.
+	Param = module.Param
+	// ParamType is how a parameter's value is read.
+	ParamType = module.ParamType
+	// ActionRequest asks an instance to run an action on one of its entities.
+	ActionRequest = module.ActionRequest
+	// ActionResult is what an action did, in one line for the owner.
+	ActionResult = module.ActionResult
+
 	// Metric is one catalogue entry.
 	Metric = module.Metric
 	// EventQuery selects past events.
@@ -54,6 +68,29 @@ const (
 	FreshDisconnected = data.FreshDisconnected
 	FreshError        = data.FreshError
 )
+
+// Parameter types.
+const (
+	ParamInt      = module.ParamInt
+	ParamDuration = module.ParamDuration
+	ParamChoice   = module.ParamChoice
+)
+
+// IntParam is a whole number from lo to hi.
+func IntParam(name, title string, lo, hi int64) Param { return module.IntParam(name, title, lo, hi) }
+
+// DurationParam is a duration from lo to hi.
+func DurationParam(name, title string, lo, hi time.Duration) Param {
+	return module.DurationParam(name, title, lo, hi)
+}
+
+// ChoiceParam is one of choices.
+func ChoiceParam(name, title string, choices ...string) Param {
+	return module.ChoiceParam(name, title, choices...)
+}
+
+// ValidateActions checks an Actor's catalogue as the app does when it loads the config.
+func ValidateActions(acts []Action) error { return module.ValidateActions(acts) }
 
 // ErrNotOffered is what a query answers when the module does not offer it; callers skip it.
 var ErrNotOffered = module.ErrNotOffered
