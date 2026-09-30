@@ -57,7 +57,7 @@ func decodeEdgeKey(k *pb.EdgeKey) sdk.EdgeKey {
 func encodeEdge(e sdk.Edge) *pb.Edge {
 	return &pb.Edge{
 		From: string(e.From), To: string(e.To), Rel: string(e.Rel), Weight: e.Weight,
-		Attrs: encodeAttrs(e.Attrs), Source: string(e.Source),
+		Attrs: encodeAttrs(e.Attrs), Source: string(e.Source), Traffic: encodeTraffic(e.Traffic),
 	}
 }
 
@@ -65,7 +65,30 @@ func decodeEdge(e *pb.Edge) sdk.Edge {
 	return sdk.Edge{
 		From: sdk.EntityRef(e.GetFrom()), To: sdk.EntityRef(e.GetTo()), Rel: sdk.Relation(e.GetRel()),
 		Weight: e.GetWeight(), Attrs: decodeAttrs(e.GetAttrs()), Source: sdk.ModuleID(e.GetSource()),
+		Traffic: decodeTraffic(e.GetTraffic()),
 	}
+}
+
+// encodeTraffic leaves unknown traffic absent, as a 1.3 module sends it.
+func encodeTraffic(t sdk.Traffic) *pb.Traffic {
+	if t == (sdk.Traffic{}) {
+		return nil
+	}
+	return &pb.Traffic{Rate: t.Rate, Unit: t.Unit.String()}
+}
+
+// unknownTrafficUnit stands for a unit this app cannot read; validation refuses it.
+const unknownTrafficUnit sdk.TrafficUnit = 255
+
+func decodeTraffic(t *pb.Traffic) sdk.Traffic {
+	if t == nil {
+		return sdk.Traffic{}
+	}
+	u, err := sdk.ParseTrafficUnit(t.GetUnit())
+	if err != nil {
+		u = unknownTrafficUnit
+	}
+	return sdk.Traffic{Rate: t.GetRate(), Unit: u}
 }
 
 func encodeEvent(e sdk.Event) *pb.Event {

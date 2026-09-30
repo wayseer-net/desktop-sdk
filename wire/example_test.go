@@ -21,6 +21,6 @@ func Example() {
 		}
 	}
 	// Output:
-	// the module speaks contract 2.0, and this app speaks 1.3
+	// the module speaks contract 2.0, and this app speaks 1.4
 	// true web-1
 }

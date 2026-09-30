@@ -30,7 +30,7 @@ func (changeSet) Generate(r *rand.Rand, size int) reflect.Value {
 		cs.Upserts = append(cs.Upserts, randomEntity(r))
 	}
 	for range r.Intn(size + 1) {
-		cs.Edges = append(cs.Edges, sdk.Edge{From: randomRef(r), To: randomRef(r), Rel: sdk.RelDependsOn, Weight: r.NormFloat64(), Attrs: randomAttrs(r, 2), Source: "m"})
+		cs.Edges = append(cs.Edges, sdk.Edge{From: randomRef(r), To: randomRef(r), Rel: sdk.RelDependsOn, Weight: r.NormFloat64(), Attrs: randomAttrs(r, 2), Source: "m", Traffic: randomTraffic(r)})
 	}
 	for range r.Intn(size + 1) {
 		cs.Events = append(cs.Events, randomEvent(r))
@@ -41,6 +41,15 @@ func (changeSet) Generate(r *rand.Rand, size int) reflect.Value {
 func randomRef(r *rand.Rand) sdk.EntityRef {
 	ref, _ := sdk.NewEntityRef("m", sdk.KindHost, fmt.Sprintf("h%d", r.Intn(1000)))
 	return ref
+}
+
+func randomTraffic(r *rand.Rand) sdk.Traffic {
+	units := []sdk.TrafficUnit{sdk.TrafficNone, sdk.TrafficRequests, sdk.TrafficBytes, sdk.TrafficMessages}
+	u := units[r.Intn(len(units))]
+	if u == sdk.TrafficNone {
+		return sdk.Traffic{}
+	}
+	return sdk.Traffic{Rate: r.ExpFloat64() * 1e3, Unit: u}
 }
 
 func randomTime(r *rand.Rand) time.Time {
@@ -114,6 +123,20 @@ func TestChangeSetsRoundTrip(t *testing.T) {
 	}
 	if err := quick.Check(f, &quick.Config{MaxCount: 300}); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestAnEdgeFromAnOlderModuleCarriesNoTraffic(t *testing.T) {
+	cs := DecodeChangeSet(&pb.ChangeSet{Edges: []*pb.Edge{{From: "m/host/a", To: "m/host/b", Rel: "talks_to", Source: "m"}}})
+	if got := cs.Edges[0].Traffic; got != (sdk.Traffic{}) {
+		t.Errorf("traffic %+v; want none", got)
+	}
+}
+
+func TestTrafficInAnUnknownUnitIsRefused(t *testing.T) {
+	e := &pb.Edge{From: "m/host/a", To: "m/host/b", Rel: "talks_to", Source: "m", Traffic: &pb.Traffic{Rate: 1, Unit: "packets"}}
+	if err := DecodeChangeSet(&pb.ChangeSet{Edges: []*pb.Edge{e}}).Edges[0].Validate(); err == nil {
+		t.Error("an unknown unit validated")
 	}
 }
 

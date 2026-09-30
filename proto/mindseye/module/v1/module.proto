@@ -230,6 +230,15 @@ message Edge {
   double weight = 4;
   map<string, Value> attrs = 5;
   string source = 6;
+  // Since 1.4; absent means no traffic is known.
+  Traffic traffic = 7;
+}
+
+// A rate per second along an edge.
+message Traffic {
+  double rate = 1;
+  // requests, bytes or messages.
+  string unit = 2;
 }
 
 message Event {

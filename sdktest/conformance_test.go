@@ -27,6 +27,7 @@ const (
 	unknownUnit
 	invalidAction
 	actsWhenCancelled
+	negativeTraffic
 )
 
 type fakeOptions struct {
@@ -102,6 +103,16 @@ func (f *fake) Discover(ctx context.Context) (*sdk.ChangeSet, error) {
 	var cs sdk.ChangeSet
 	for i := range f.opts.Hosts {
 		cs.Upserts = append(cs.Upserts, f.host(i))
+	}
+	if len(cs.Upserts) >= 2 {
+		rate := 20.0
+		if f.flaw == negativeTraffic {
+			rate = -20
+		}
+		cs.Edges = []sdk.Edge{{
+			From: cs.Upserts[0].Ref, To: cs.Upserts[1].Ref, Rel: sdk.RelTalksTo, Source: "conformance",
+			Traffic: sdk.Traffic{Rate: rate, Unit: sdk.TrafficRequests},
+		}}
 	}
 	return &cs, ctx.Err()
 }
@@ -204,6 +215,7 @@ func TestEachFlawFailsItsCheck(t *testing.T) {
 		unknownUnit:         {CheckSeries},
 		invalidAction:       {CheckActions},
 		actsWhenCancelled:   {CheckActions},
+		negativeTraffic:     {CheckSnapshot, CheckDiscover},
 	}
 	for fl, want := range cases {
 		t.Run(fmt.Sprint(want), func(t *testing.T) {

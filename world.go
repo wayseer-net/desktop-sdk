@@ -19,6 +19,10 @@ type (
 	Kind = model.Kind
 	// Edge relates two entities.
 	Edge = model.Edge
+	// Traffic is a rate per second along an edge, in a unit.
+	Traffic = model.Traffic
+	// TrafficUnit is what an edge's traffic counts.
+	TrafficUnit = model.TrafficUnit
 	// EdgeKey identifies an edge.
 	EdgeKey = model.EdgeKey
 	// Relation is an edge's meaning.
@@ -111,6 +115,17 @@ const (
 	UnitCount   = model.UnitCount
 	UnitPerSec  = model.UnitPerSec
 )
+
+// Traffic units.
+const (
+	TrafficNone     = model.TrafficNone
+	TrafficRequests = model.TrafficRequests
+	TrafficBytes    = model.TrafficBytes
+	TrafficMessages = model.TrafficMessages
+)
+
+// ParseTrafficUnit reads a traffic unit's name: requests, bytes or messages.
+func ParseTrafficUnit(s string) (TrafficUnit, error) { return model.ParseTrafficUnit(s) }
 
 // NewEntityRef builds the ref for a native ID in a module instance.
 func NewEntityRef(instance string, kind Kind, native string) (EntityRef, error) {
