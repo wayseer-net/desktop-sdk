@@ -124,6 +124,27 @@ func (s *server) Search(ctx context.Context, r *pb.SearchRequest) (*pb.SearchRes
 	return &pb.SearchResponse{Refs: wire.EncodeRefs(refs)}, failed(err)
 }
 
+func (s *server) Actions(context.Context, *pb.ActionsRequest) (*pb.ActionsResponse, error) {
+	a, ok := s.m.(sdk.Actor)
+	if !ok {
+		return nil, unimplemented("actions")
+	}
+	var acts []sdk.Action
+	err := guard(func() error { acts = a.Actions(); return nil })
+	return wire.EncodeActions(acts), failed(err)
+}
+
+// Do runs the action until it ends or the app cancels the call.
+func (s *server) Do(ctx context.Context, r *pb.DoRequest) (*pb.DoResponse, error) {
+	a, ok := s.m.(sdk.Actor)
+	if !ok {
+		return nil, unimplemented("actions")
+	}
+	var res sdk.ActionResult
+	err := guard(func() (err error) { res, err = a.Do(ctx, wire.DecodeActionRequest(r)); return err })
+	return &pb.DoResponse{Message: res.Message}, failed(err)
+}
+
 // streamSink sends change sets down the Run stream in parts; Send is not safe for concurrent use.
 type streamSink struct {
 	mu   sync.Mutex

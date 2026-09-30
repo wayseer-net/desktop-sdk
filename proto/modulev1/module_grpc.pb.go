@@ -32,6 +32,8 @@ const (
 	ModuleService_QueryEvents_FullMethodName = "/mindseye.module.v1.ModuleService/QueryEvents"
 	ModuleService_Subscribe_FullMethodName   = "/mindseye.module.v1.ModuleService/Subscribe"
 	ModuleService_Search_FullMethodName      = "/mindseye.module.v1.ModuleService/Search"
+	ModuleService_Actions_FullMethodName     = "/mindseye.module.v1.ModuleService/Actions"
+	ModuleService_Do_FullMethodName          = "/mindseye.module.v1.ModuleService/Do"
 )
 
 // ModuleServiceClient is the client API for ModuleService service.
@@ -54,6 +56,11 @@ type ModuleServiceClient interface {
 	QueryEvents(ctx context.Context, in *QueryEventsRequest, opts ...grpc.CallOption) (*QueryEventsResponse, error)
 	Subscribe(ctx context.Context, in *SubscribeRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[SubscribeResponse], error)
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
+	// Actions lists the actions the module offers; the app asks once, after Configure.
+	Actions(ctx context.Context, in *ActionsRequest, opts ...grpc.CallOption) (*ActionsResponse, error)
+	// Do runs one action the owner confirmed and the app checked against the config. The app
+	// cancels the call when it gives up on it, and the module must stop then.
+	Do(ctx context.Context, in *DoRequest, opts ...grpc.CallOption) (*DoResponse, error)
 }
 
 type moduleServiceClient struct {
@@ -182,6 +189,26 @@ func (c *moduleServiceClient) Search(ctx context.Context, in *SearchRequest, opt
 	return out, nil
 }
 
+func (c *moduleServiceClient) Actions(ctx context.Context, in *ActionsRequest, opts ...grpc.CallOption) (*ActionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ActionsResponse)
+	err := c.cc.Invoke(ctx, ModuleService_Actions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *moduleServiceClient) Do(ctx context.Context, in *DoRequest, opts ...grpc.CallOption) (*DoResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DoResponse)
+	err := c.cc.Invoke(ctx, ModuleService_Do_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ModuleServiceServer is the server API for ModuleService service.
 // All implementations must embed UnimplementedModuleServiceServer
 // for forward compatibility.
@@ -202,6 +229,11 @@ type ModuleServiceServer interface {
 	QueryEvents(context.Context, *QueryEventsRequest) (*QueryEventsResponse, error)
 	Subscribe(*SubscribeRequest, grpc.ServerStreamingServer[SubscribeResponse]) error
 	Search(context.Context, *SearchRequest) (*SearchResponse, error)
+	// Actions lists the actions the module offers; the app asks once, after Configure.
+	Actions(context.Context, *ActionsRequest) (*ActionsResponse, error)
+	// Do runs one action the owner confirmed and the app checked against the config. The app
+	// cancels the call when it gives up on it, and the module must stop then.
+	Do(context.Context, *DoRequest) (*DoResponse, error)
 	mustEmbedUnimplementedModuleServiceServer()
 }
 
@@ -241,6 +273,12 @@ func (UnimplementedModuleServiceServer) Subscribe(*SubscribeRequest, grpc.Server
 }
 func (UnimplementedModuleServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Search not implemented")
+}
+func (UnimplementedModuleServiceServer) Actions(context.Context, *ActionsRequest) (*ActionsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Actions not implemented")
+}
+func (UnimplementedModuleServiceServer) Do(context.Context, *DoRequest) (*DoResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Do not implemented")
 }
 func (UnimplementedModuleServiceServer) mustEmbedUnimplementedModuleServiceServer() {}
 func (UnimplementedModuleServiceServer) testEmbeddedByValue()                       {}
@@ -429,6 +467,42 @@ func _ModuleService_Search_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ModuleService_Actions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ActionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ModuleServiceServer).Actions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ModuleService_Actions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ModuleServiceServer).Actions(ctx, req.(*ActionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ModuleService_Do_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ModuleServiceServer).Do(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ModuleService_Do_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ModuleServiceServer).Do(ctx, req.(*DoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ModuleService_ServiceDesc is the grpc.ServiceDesc for ModuleService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -467,6 +541,14 @@ var ModuleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Search",
 			Handler:    _ModuleService_Search_Handler,
+		},
+		{
+			MethodName: "Actions",
+			Handler:    _ModuleService_Actions_Handler,
+		},
+		{
+			MethodName: "Do",
+			Handler:    _ModuleService_Do_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

@@ -24,6 +24,61 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type ParamType int32
+
+const (
+	ParamType_PARAM_TYPE_UNSPECIFIED ParamType = 0
+	// A whole number from min to max.
+	ParamType_PARAM_TYPE_INT ParamType = 1
+	// A duration from min to max nanoseconds, written as "90m".
+	ParamType_PARAM_TYPE_DURATION ParamType = 2
+	// One of choices.
+	ParamType_PARAM_TYPE_CHOICE ParamType = 3
+)
+
+// Enum value maps for ParamType.
+var (
+	ParamType_name = map[int32]string{
+		0: "PARAM_TYPE_UNSPECIFIED",
+		1: "PARAM_TYPE_INT",
+		2: "PARAM_TYPE_DURATION",
+		3: "PARAM_TYPE_CHOICE",
+	}
+	ParamType_value = map[string]int32{
+		"PARAM_TYPE_UNSPECIFIED": 0,
+		"PARAM_TYPE_INT":         1,
+		"PARAM_TYPE_DURATION":    2,
+		"PARAM_TYPE_CHOICE":      3,
+	}
+)
+
+func (x ParamType) Enum() *ParamType {
+	p := new(ParamType)
+	*p = x
+	return p
+}
+
+func (x ParamType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ParamType) Descriptor() protoreflect.EnumDescriptor {
+	return file_mindseye_module_v1_module_proto_enumTypes[0].Descriptor()
+}
+
+func (ParamType) Type() protoreflect.EnumType {
+	return &file_mindseye_module_v1_module_proto_enumTypes[0]
+}
+
+func (x ParamType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ParamType.Descriptor instead.
+func (ParamType) EnumDescriptor() ([]byte, []int) {
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{0}
+}
+
 type StatusLevel int32
 
 const (
@@ -63,11 +118,11 @@ func (x StatusLevel) String() string {
 }
 
 func (StatusLevel) Descriptor() protoreflect.EnumDescriptor {
-	return file_mindseye_module_v1_module_proto_enumTypes[0].Descriptor()
+	return file_mindseye_module_v1_module_proto_enumTypes[1].Descriptor()
 }
 
 func (StatusLevel) Type() protoreflect.EnumType {
-	return &file_mindseye_module_v1_module_proto_enumTypes[0]
+	return &file_mindseye_module_v1_module_proto_enumTypes[1]
 }
 
 func (x StatusLevel) Number() protoreflect.EnumNumber {
@@ -76,7 +131,7 @@ func (x StatusLevel) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use StatusLevel.Descriptor instead.
 func (StatusLevel) EnumDescriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{0}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{1}
 }
 
 type Severity int32
@@ -118,11 +173,11 @@ func (x Severity) String() string {
 }
 
 func (Severity) Descriptor() protoreflect.EnumDescriptor {
-	return file_mindseye_module_v1_module_proto_enumTypes[1].Descriptor()
+	return file_mindseye_module_v1_module_proto_enumTypes[2].Descriptor()
 }
 
 func (Severity) Type() protoreflect.EnumType {
-	return &file_mindseye_module_v1_module_proto_enumTypes[1]
+	return &file_mindseye_module_v1_module_proto_enumTypes[2]
 }
 
 func (x Severity) Number() protoreflect.EnumNumber {
@@ -131,7 +186,7 @@ func (x Severity) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Severity.Descriptor instead.
 func (Severity) EnumDescriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{1}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{2}
 }
 
 type Aggregation int32
@@ -176,11 +231,11 @@ func (x Aggregation) String() string {
 }
 
 func (Aggregation) Descriptor() protoreflect.EnumDescriptor {
-	return file_mindseye_module_v1_module_proto_enumTypes[2].Descriptor()
+	return file_mindseye_module_v1_module_proto_enumTypes[3].Descriptor()
 }
 
 func (Aggregation) Type() protoreflect.EnumType {
-	return &file_mindseye_module_v1_module_proto_enumTypes[2]
+	return &file_mindseye_module_v1_module_proto_enumTypes[3]
 }
 
 func (x Aggregation) Number() protoreflect.EnumNumber {
@@ -189,7 +244,7 @@ func (x Aggregation) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Aggregation.Descriptor instead.
 func (Aggregation) EnumDescriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{2}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{3}
 }
 
 // Version is the contract's version: a major change breaks compatibility, a minor one adds.
@@ -297,8 +352,8 @@ type InfoResponse struct {
 	Kind        string   `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	Version     string   `protobuf:"bytes,3,opt,name=version,proto3" json:"version,omitempty"`
 	Description string   `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
-	// Optional methods implemented: discover, series, events, subscribe, search, and top (it
-	// honours SeriesQuery.top; since contract 1.2).
+	// Optional methods implemented: discover, series, events, subscribe, search, top (it
+	// honours SeriesQuery.top; since contract 1.2), and actions (Actions and Do; since 1.3).
 	Capabilities  []string `protobuf:"bytes,5,rep,name=capabilities,proto3" json:"capabilities,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1286,6 +1341,375 @@ func (x *SearchResponse) GetRefs() []string {
 	return nil
 }
 
+type ActionsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ActionsRequest) Reset() {
+	*x = ActionsRequest{}
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ActionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActionsRequest) ProtoMessage() {}
+
+func (x *ActionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActionsRequest.ProtoReflect.Descriptor instead.
+func (*ActionsRequest) Descriptor() ([]byte, []int) {
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{22}
+}
+
+type ActionsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Actions       []*Action              `protobuf:"bytes,1,rep,name=actions,proto3" json:"actions,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ActionsResponse) Reset() {
+	*x = ActionsResponse{}
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ActionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActionsResponse) ProtoMessage() {}
+
+func (x *ActionsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActionsResponse.ProtoReflect.Descriptor instead.
+func (*ActionsResponse) Descriptor() ([]byte, []int) {
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *ActionsResponse) GetActions() []*Action {
+	if x != nil {
+		return x.Actions
+	}
+	return nil
+}
+
+// Action is one thing the module can do to an entity, such as restarting it.
+type Action struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Lower-case letters, digits and dashes, such as "restart".
+	Id    string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title string `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	// One line on what changes, shown before the owner confirms.
+	Changes string `protobuf:"bytes,3,opt,name=changes,proto3" json:"changes,omitempty"`
+	// The kinds of entity it applies to.
+	Kinds         []string `protobuf:"bytes,4,rep,name=kinds,proto3" json:"kinds,omitempty"`
+	Params        []*Param `protobuf:"bytes,5,rep,name=params,proto3" json:"params,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Action) Reset() {
+	*x = Action{}
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Action) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Action) ProtoMessage() {}
+
+func (x *Action) ProtoReflect() protoreflect.Message {
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Action.ProtoReflect.Descriptor instead.
+func (*Action) Descriptor() ([]byte, []int) {
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *Action) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Action) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *Action) GetChanges() string {
+	if x != nil {
+		return x.Changes
+	}
+	return ""
+}
+
+func (x *Action) GetKinds() []string {
+	if x != nil {
+		return x.Kinds
+	}
+	return nil
+}
+
+func (x *Action) GetParams() []*Param {
+	if x != nil {
+		return x.Params
+	}
+	return nil
+}
+
+// Param is one typed, bounded parameter of an action.
+type Param struct {
+	state   protoimpl.MessageState `protogen:"open.v1"`
+	Name    string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Title   string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Type    ParamType              `protobuf:"varint,3,opt,name=type,proto3,enum=mindseye.module.v1.ParamType" json:"type,omitempty"`
+	Min     int64                  `protobuf:"varint,4,opt,name=min,proto3" json:"min,omitempty"`
+	Max     int64                  `protobuf:"varint,5,opt,name=max,proto3" json:"max,omitempty"`
+	Choices []string               `protobuf:"bytes,6,rep,name=choices,proto3" json:"choices,omitempty"`
+	// Empty when the value must be given.
+	DefaultValue  string `protobuf:"bytes,7,opt,name=default_value,json=defaultValue,proto3" json:"default_value,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Param) Reset() {
+	*x = Param{}
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Param) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Param) ProtoMessage() {}
+
+func (x *Param) ProtoReflect() protoreflect.Message {
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Param.ProtoReflect.Descriptor instead.
+func (*Param) Descriptor() ([]byte, []int) {
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *Param) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Param) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *Param) GetType() ParamType {
+	if x != nil {
+		return x.Type
+	}
+	return ParamType_PARAM_TYPE_UNSPECIFIED
+}
+
+func (x *Param) GetMin() int64 {
+	if x != nil {
+		return x.Min
+	}
+	return 0
+}
+
+func (x *Param) GetMax() int64 {
+	if x != nil {
+		return x.Max
+	}
+	return 0
+}
+
+func (x *Param) GetChoices() []string {
+	if x != nil {
+		return x.Choices
+	}
+	return nil
+}
+
+func (x *Param) GetDefaultValue() string {
+	if x != nil {
+		return x.DefaultValue
+	}
+	return ""
+}
+
+type DoRequest struct {
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	Instance string                 `protobuf:"bytes,1,opt,name=instance,proto3" json:"instance,omitempty"`
+	Action   string                 `protobuf:"bytes,2,opt,name=action,proto3" json:"action,omitempty"`
+	// The entity's ref, one of this instance's.
+	Entity string `protobuf:"bytes,3,opt,name=entity,proto3" json:"entity,omitempty"`
+	// Every parameter, checked and with defaults filled in.
+	Params        map[string]string `protobuf:"bytes,4,rep,name=params,proto3" json:"params,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DoRequest) Reset() {
+	*x = DoRequest{}
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DoRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DoRequest) ProtoMessage() {}
+
+func (x *DoRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DoRequest.ProtoReflect.Descriptor instead.
+func (*DoRequest) Descriptor() ([]byte, []int) {
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *DoRequest) GetInstance() string {
+	if x != nil {
+		return x.Instance
+	}
+	return ""
+}
+
+func (x *DoRequest) GetAction() string {
+	if x != nil {
+		return x.Action
+	}
+	return ""
+}
+
+func (x *DoRequest) GetEntity() string {
+	if x != nil {
+		return x.Entity
+	}
+	return ""
+}
+
+func (x *DoRequest) GetParams() map[string]string {
+	if x != nil {
+		return x.Params
+	}
+	return nil
+}
+
+type DoResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// What the action did, in one line for the owner; it must hold no secret.
+	Message       string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DoResponse) Reset() {
+	*x = DoResponse{}
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DoResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DoResponse) ProtoMessage() {}
+
+func (x *DoResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DoResponse.ProtoReflect.Descriptor instead.
+func (*DoResponse) Descriptor() ([]byte, []int) {
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *DoResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 // ChangeSet is applied in field order: removals, edge removals, upserts, edges, events.
 type ChangeSet struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -1300,7 +1724,7 @@ type ChangeSet struct {
 
 func (x *ChangeSet) Reset() {
 	*x = ChangeSet{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[22]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1312,7 +1736,7 @@ func (x *ChangeSet) String() string {
 func (*ChangeSet) ProtoMessage() {}
 
 func (x *ChangeSet) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[22]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1325,7 +1749,7 @@ func (x *ChangeSet) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChangeSet.ProtoReflect.Descriptor instead.
 func (*ChangeSet) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{22}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *ChangeSet) GetRemoves() []string {
@@ -1381,7 +1805,7 @@ type Entity struct {
 
 func (x *Entity) Reset() {
 	*x = Entity{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[23]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1393,7 +1817,7 @@ func (x *Entity) String() string {
 func (*Entity) ProtoMessage() {}
 
 func (x *Entity) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[23]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1406,7 +1830,7 @@ func (x *Entity) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Entity.ProtoReflect.Descriptor instead.
 func (*Entity) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{23}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *Entity) GetRef() string {
@@ -1483,7 +1907,7 @@ type EdgeKey struct {
 
 func (x *EdgeKey) Reset() {
 	*x = EdgeKey{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[24]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1495,7 +1919,7 @@ func (x *EdgeKey) String() string {
 func (*EdgeKey) ProtoMessage() {}
 
 func (x *EdgeKey) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[24]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1508,7 +1932,7 @@ func (x *EdgeKey) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EdgeKey.ProtoReflect.Descriptor instead.
 func (*EdgeKey) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{24}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *EdgeKey) GetFrom() string {
@@ -1546,7 +1970,7 @@ type Edge struct {
 
 func (x *Edge) Reset() {
 	*x = Edge{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[25]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1558,7 +1982,7 @@ func (x *Edge) String() string {
 func (*Edge) ProtoMessage() {}
 
 func (x *Edge) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[25]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1571,7 +1995,7 @@ func (x *Edge) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Edge.ProtoReflect.Descriptor instead.
 func (*Edge) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{25}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *Edge) GetFrom() string {
@@ -1634,7 +2058,7 @@ type Event struct {
 
 func (x *Event) Reset() {
 	*x = Event{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[26]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1646,7 +2070,7 @@ func (x *Event) String() string {
 func (*Event) ProtoMessage() {}
 
 func (x *Event) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[26]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1659,7 +2083,7 @@ func (x *Event) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Event.ProtoReflect.Descriptor instead.
 func (*Event) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{26}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *Event) GetId() string {
@@ -1737,7 +2161,7 @@ type Value struct {
 
 func (x *Value) Reset() {
 	*x = Value{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[27]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1749,7 +2173,7 @@ func (x *Value) String() string {
 func (*Value) ProtoMessage() {}
 
 func (x *Value) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[27]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1762,7 +2186,7 @@ func (x *Value) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Value.ProtoReflect.Descriptor instead.
 func (*Value) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{27}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *Value) GetValue() isValue_Value {
@@ -1868,7 +2292,7 @@ type ValueList struct {
 
 func (x *ValueList) Reset() {
 	*x = ValueList{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[28]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1880,7 +2304,7 @@ func (x *ValueList) String() string {
 func (*ValueList) ProtoMessage() {}
 
 func (x *ValueList) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[28]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1893,7 +2317,7 @@ func (x *ValueList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ValueList.ProtoReflect.Descriptor instead.
 func (*ValueList) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{28}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *ValueList) GetValues() []*Value {
@@ -1920,7 +2344,7 @@ type Metric struct {
 
 func (x *Metric) Reset() {
 	*x = Metric{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[29]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1932,7 +2356,7 @@ func (x *Metric) String() string {
 func (*Metric) ProtoMessage() {}
 
 func (x *Metric) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[29]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1945,7 +2369,7 @@ func (x *Metric) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Metric.ProtoReflect.Descriptor instead.
 func (*Metric) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{29}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *Metric) GetName() string {
@@ -2001,7 +2425,7 @@ type TimeWindow struct {
 
 func (x *TimeWindow) Reset() {
 	*x = TimeWindow{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[30]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2013,7 +2437,7 @@ func (x *TimeWindow) String() string {
 func (*TimeWindow) ProtoMessage() {}
 
 func (x *TimeWindow) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[30]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2026,7 +2450,7 @@ func (x *TimeWindow) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TimeWindow.ProtoReflect.Descriptor instead.
 func (*TimeWindow) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{30}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *TimeWindow) GetFrom() int64 {
@@ -2064,7 +2488,7 @@ type SeriesQuery struct {
 
 func (x *SeriesQuery) Reset() {
 	*x = SeriesQuery{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[31]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2076,7 +2500,7 @@ func (x *SeriesQuery) String() string {
 func (*SeriesQuery) ProtoMessage() {}
 
 func (x *SeriesQuery) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[31]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2089,7 +2513,7 @@ func (x *SeriesQuery) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SeriesQuery.ProtoReflect.Descriptor instead.
 func (*SeriesQuery) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{31}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *SeriesQuery) GetEntities() []string {
@@ -2164,7 +2588,7 @@ type Filter struct {
 
 func (x *Filter) Reset() {
 	*x = Filter{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[32]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2176,7 +2600,7 @@ func (x *Filter) String() string {
 func (*Filter) ProtoMessage() {}
 
 func (x *Filter) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[32]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2189,7 +2613,7 @@ func (x *Filter) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Filter.ProtoReflect.Descriptor instead.
 func (*Filter) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{32}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *Filter) GetKinds() []string {
@@ -2253,7 +2677,7 @@ type Predicate struct {
 
 func (x *Predicate) Reset() {
 	*x = Predicate{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[33]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2265,7 +2689,7 @@ func (x *Predicate) String() string {
 func (*Predicate) ProtoMessage() {}
 
 func (x *Predicate) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[33]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2278,7 +2702,7 @@ func (x *Predicate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Predicate.ProtoReflect.Descriptor instead.
 func (*Predicate) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{33}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *Predicate) GetKey() string {
@@ -2312,7 +2736,7 @@ type SeriesRef struct {
 
 func (x *SeriesRef) Reset() {
 	*x = SeriesRef{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[34]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2324,7 +2748,7 @@ func (x *SeriesRef) String() string {
 func (*SeriesRef) ProtoMessage() {}
 
 func (x *SeriesRef) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[34]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2337,7 +2761,7 @@ func (x *SeriesRef) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SeriesRef.ProtoReflect.Descriptor instead.
 func (*SeriesRef) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{34}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *SeriesRef) GetEntity() string {
@@ -2368,7 +2792,7 @@ type Series struct {
 
 func (x *Series) Reset() {
 	*x = Series{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[35]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2380,7 +2804,7 @@ func (x *Series) String() string {
 func (*Series) ProtoMessage() {}
 
 func (x *Series) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[35]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2393,7 +2817,7 @@ func (x *Series) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Series.ProtoReflect.Descriptor instead.
 func (*Series) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{35}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *Series) GetRef() *SeriesRef {
@@ -2438,7 +2862,7 @@ type EventQuery struct {
 
 func (x *EventQuery) Reset() {
 	*x = EventQuery{}
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[36]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2450,7 +2874,7 @@ func (x *EventQuery) String() string {
 func (*EventQuery) ProtoMessage() {}
 
 func (x *EventQuery) ProtoReflect() protoreflect.Message {
-	mi := &file_mindseye_module_v1_module_proto_msgTypes[36]
+	mi := &file_mindseye_module_v1_module_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2463,7 +2887,7 @@ func (x *EventQuery) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EventQuery.ProtoReflect.Descriptor instead.
 func (*EventQuery) Descriptor() ([]byte, []int) {
-	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{36}
+	return file_mindseye_module_v1_module_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *EventQuery) GetEntities() []string {
@@ -2567,7 +2991,35 @@ const file_mindseye_module_v1_module_proto_rawDesc = "" +
 	"\x04text\x18\x01 \x01(\tR\x04text\x12\x14\n" +
 	"\x05limit\x18\x02 \x01(\x05R\x05limit\"$\n" +
 	"\x0eSearchResponse\x12\x12\n" +
-	"\x04refs\x18\x01 \x03(\tR\x04refs\"\xfe\x01\n" +
+	"\x04refs\x18\x01 \x03(\tR\x04refs\"\x10\n" +
+	"\x0eActionsRequest\"G\n" +
+	"\x0fActionsResponse\x124\n" +
+	"\aactions\x18\x01 \x03(\v2\x1a.mindseye.module.v1.ActionR\aactions\"\x91\x01\n" +
+	"\x06Action\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12\x18\n" +
+	"\achanges\x18\x03 \x01(\tR\achanges\x12\x14\n" +
+	"\x05kinds\x18\x04 \x03(\tR\x05kinds\x121\n" +
+	"\x06params\x18\x05 \x03(\v2\x19.mindseye.module.v1.ParamR\x06params\"\xc7\x01\n" +
+	"\x05Param\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x121\n" +
+	"\x04type\x18\x03 \x01(\x0e2\x1d.mindseye.module.v1.ParamTypeR\x04type\x12\x10\n" +
+	"\x03min\x18\x04 \x01(\x03R\x03min\x12\x10\n" +
+	"\x03max\x18\x05 \x01(\x03R\x03max\x12\x18\n" +
+	"\achoices\x18\x06 \x03(\tR\achoices\x12#\n" +
+	"\rdefault_value\x18\a \x01(\tR\fdefaultValue\"\xd5\x01\n" +
+	"\tDoRequest\x12\x1a\n" +
+	"\binstance\x18\x01 \x01(\tR\binstance\x12\x16\n" +
+	"\x06action\x18\x02 \x01(\tR\x06action\x12\x16\n" +
+	"\x06entity\x18\x03 \x01(\tR\x06entity\x12A\n" +
+	"\x06params\x18\x04 \x03(\v2).mindseye.module.v1.DoRequest.ParamsEntryR\x06params\x1a9\n" +
+	"\vParamsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"&\n" +
+	"\n" +
+	"DoResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"\xfe\x01\n" +
 	"\tChangeSet\x12\x18\n" +
 	"\aremoves\x18\x01 \x03(\tR\aremoves\x12>\n" +
 	"\fremove_edges\x18\x02 \x03(\v2\x1b.mindseye.module.v1.EdgeKeyR\vremoveEdges\x124\n" +
@@ -2678,7 +3130,12 @@ const file_mindseye_module_v1_module_proto_rawDesc = "" +
 	"\x06window\x18\x02 \x01(\v2\x1e.mindseye.module.v1.TimeWindowR\x06window\x12?\n" +
 	"\fmin_severity\x18\x03 \x01(\x0e2\x1c.mindseye.module.v1.SeverityR\vminSeverity\x12\x14\n" +
 	"\x05kinds\x18\x04 \x03(\tR\x05kinds\x12\x14\n" +
-	"\x05limit\x18\x05 \x01(\x05R\x05limit*\x81\x01\n" +
+	"\x05limit\x18\x05 \x01(\x05R\x05limit*k\n" +
+	"\tParamType\x12\x1a\n" +
+	"\x16PARAM_TYPE_UNSPECIFIED\x10\x00\x12\x12\n" +
+	"\x0ePARAM_TYPE_INT\x10\x01\x12\x17\n" +
+	"\x13PARAM_TYPE_DURATION\x10\x02\x12\x15\n" +
+	"\x11PARAM_TYPE_CHOICE\x10\x03*\x81\x01\n" +
 	"\vStatusLevel\x12\x18\n" +
 	"\x14STATUS_LEVEL_UNKNOWN\x10\x00\x12\x13\n" +
 	"\x0fSTATUS_LEVEL_OK\x10\x01\x12\x15\n" +
@@ -2697,7 +3154,7 @@ const file_mindseye_module_v1_module_proto_rawDesc = "" +
 	"\x0fAGGREGATION_MAX\x10\x02\x12\x13\n" +
 	"\x0fAGGREGATION_MIN\x10\x03\x12\x13\n" +
 	"\x0fAGGREGATION_SUM\x10\x04\x12\x13\n" +
-	"\x0fAGGREGATION_P95\x10\x052\xe7\x06\n" +
+	"\x0fAGGREGATION_P95\x10\x052\x80\b\n" +
 	"\rModuleService\x12I\n" +
 	"\x04Info\x12\x1f.mindseye.module.v1.InfoRequest\x1a .mindseye.module.v1.InfoResponse\x12X\n" +
 	"\tConfigure\x12$.mindseye.module.v1.ConfigureRequest\x1a%.mindseye.module.v1.ConfigureResponse\x12O\n" +
@@ -2708,7 +3165,9 @@ const file_mindseye_module_v1_module_proto_rawDesc = "" +
 	"\vQuerySeries\x12&.mindseye.module.v1.QuerySeriesRequest\x1a'.mindseye.module.v1.QuerySeriesResponse\x12^\n" +
 	"\vQueryEvents\x12&.mindseye.module.v1.QueryEventsRequest\x1a'.mindseye.module.v1.QueryEventsResponse\x12Z\n" +
 	"\tSubscribe\x12$.mindseye.module.v1.SubscribeRequest\x1a%.mindseye.module.v1.SubscribeResponse0\x01\x12O\n" +
-	"\x06Search\x12!.mindseye.module.v1.SearchRequest\x1a\".mindseye.module.v1.SearchResponseB!Z\x1fmindseye/pkg/sdk/proto/modulev1b\x06proto3"
+	"\x06Search\x12!.mindseye.module.v1.SearchRequest\x1a\".mindseye.module.v1.SearchResponse\x12R\n" +
+	"\aActions\x12\".mindseye.module.v1.ActionsRequest\x1a#.mindseye.module.v1.ActionsResponse\x12C\n" +
+	"\x02Do\x12\x1d.mindseye.module.v1.DoRequest\x1a\x1e.mindseye.module.v1.DoResponseB!Z\x1fmindseye/pkg/sdk/proto/modulev1b\x06proto3"
 
 var (
 	file_mindseye_module_v1_module_proto_rawDescOnce sync.Once
@@ -2722,114 +3181,130 @@ func file_mindseye_module_v1_module_proto_rawDescGZIP() []byte {
 	return file_mindseye_module_v1_module_proto_rawDescData
 }
 
-var file_mindseye_module_v1_module_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_mindseye_module_v1_module_proto_msgTypes = make([]protoimpl.MessageInfo, 40)
+var file_mindseye_module_v1_module_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
+var file_mindseye_module_v1_module_proto_msgTypes = make([]protoimpl.MessageInfo, 47)
 var file_mindseye_module_v1_module_proto_goTypes = []any{
-	(StatusLevel)(0),            // 0: mindseye.module.v1.StatusLevel
-	(Severity)(0),               // 1: mindseye.module.v1.Severity
-	(Aggregation)(0),            // 2: mindseye.module.v1.Aggregation
-	(*Version)(nil),             // 3: mindseye.module.v1.Version
-	(*InfoRequest)(nil),         // 4: mindseye.module.v1.InfoRequest
-	(*InfoResponse)(nil),        // 5: mindseye.module.v1.InfoResponse
-	(*ConfigureRequest)(nil),    // 6: mindseye.module.v1.ConfigureRequest
-	(*ConfigureResponse)(nil),   // 7: mindseye.module.v1.ConfigureResponse
-	(*YamlNode)(nil),            // 8: mindseye.module.v1.YamlNode
-	(*HealthRequest)(nil),       // 9: mindseye.module.v1.HealthRequest
-	(*HealthResponse)(nil),      // 10: mindseye.module.v1.HealthResponse
-	(*RunRequest)(nil),          // 11: mindseye.module.v1.RunRequest
-	(*RunResponse)(nil),         // 12: mindseye.module.v1.RunResponse
-	(*DiscoverRequest)(nil),     // 13: mindseye.module.v1.DiscoverRequest
-	(*DiscoverResponse)(nil),    // 14: mindseye.module.v1.DiscoverResponse
-	(*MetricsRequest)(nil),      // 15: mindseye.module.v1.MetricsRequest
-	(*MetricsResponse)(nil),     // 16: mindseye.module.v1.MetricsResponse
-	(*QuerySeriesRequest)(nil),  // 17: mindseye.module.v1.QuerySeriesRequest
-	(*QuerySeriesResponse)(nil), // 18: mindseye.module.v1.QuerySeriesResponse
-	(*QueryEventsRequest)(nil),  // 19: mindseye.module.v1.QueryEventsRequest
-	(*QueryEventsResponse)(nil), // 20: mindseye.module.v1.QueryEventsResponse
-	(*SubscribeRequest)(nil),    // 21: mindseye.module.v1.SubscribeRequest
-	(*SubscribeResponse)(nil),   // 22: mindseye.module.v1.SubscribeResponse
-	(*SearchRequest)(nil),       // 23: mindseye.module.v1.SearchRequest
-	(*SearchResponse)(nil),      // 24: mindseye.module.v1.SearchResponse
-	(*ChangeSet)(nil),           // 25: mindseye.module.v1.ChangeSet
-	(*Entity)(nil),              // 26: mindseye.module.v1.Entity
-	(*EdgeKey)(nil),             // 27: mindseye.module.v1.EdgeKey
-	(*Edge)(nil),                // 28: mindseye.module.v1.Edge
-	(*Event)(nil),               // 29: mindseye.module.v1.Event
-	(*Value)(nil),               // 30: mindseye.module.v1.Value
-	(*ValueList)(nil),           // 31: mindseye.module.v1.ValueList
-	(*Metric)(nil),              // 32: mindseye.module.v1.Metric
-	(*TimeWindow)(nil),          // 33: mindseye.module.v1.TimeWindow
-	(*SeriesQuery)(nil),         // 34: mindseye.module.v1.SeriesQuery
-	(*Filter)(nil),              // 35: mindseye.module.v1.Filter
-	(*Predicate)(nil),           // 36: mindseye.module.v1.Predicate
-	(*SeriesRef)(nil),           // 37: mindseye.module.v1.SeriesRef
-	(*Series)(nil),              // 38: mindseye.module.v1.Series
-	(*EventQuery)(nil),          // 39: mindseye.module.v1.EventQuery
-	nil,                         // 40: mindseye.module.v1.Entity.AttrsEntry
-	nil,                         // 41: mindseye.module.v1.Edge.AttrsEntry
-	nil,                         // 42: mindseye.module.v1.Event.FieldsEntry
+	(ParamType)(0),              // 0: mindseye.module.v1.ParamType
+	(StatusLevel)(0),            // 1: mindseye.module.v1.StatusLevel
+	(Severity)(0),               // 2: mindseye.module.v1.Severity
+	(Aggregation)(0),            // 3: mindseye.module.v1.Aggregation
+	(*Version)(nil),             // 4: mindseye.module.v1.Version
+	(*InfoRequest)(nil),         // 5: mindseye.module.v1.InfoRequest
+	(*InfoResponse)(nil),        // 6: mindseye.module.v1.InfoResponse
+	(*ConfigureRequest)(nil),    // 7: mindseye.module.v1.ConfigureRequest
+	(*ConfigureResponse)(nil),   // 8: mindseye.module.v1.ConfigureResponse
+	(*YamlNode)(nil),            // 9: mindseye.module.v1.YamlNode
+	(*HealthRequest)(nil),       // 10: mindseye.module.v1.HealthRequest
+	(*HealthResponse)(nil),      // 11: mindseye.module.v1.HealthResponse
+	(*RunRequest)(nil),          // 12: mindseye.module.v1.RunRequest
+	(*RunResponse)(nil),         // 13: mindseye.module.v1.RunResponse
+	(*DiscoverRequest)(nil),     // 14: mindseye.module.v1.DiscoverRequest
+	(*DiscoverResponse)(nil),    // 15: mindseye.module.v1.DiscoverResponse
+	(*MetricsRequest)(nil),      // 16: mindseye.module.v1.MetricsRequest
+	(*MetricsResponse)(nil),     // 17: mindseye.module.v1.MetricsResponse
+	(*QuerySeriesRequest)(nil),  // 18: mindseye.module.v1.QuerySeriesRequest
+	(*QuerySeriesResponse)(nil), // 19: mindseye.module.v1.QuerySeriesResponse
+	(*QueryEventsRequest)(nil),  // 20: mindseye.module.v1.QueryEventsRequest
+	(*QueryEventsResponse)(nil), // 21: mindseye.module.v1.QueryEventsResponse
+	(*SubscribeRequest)(nil),    // 22: mindseye.module.v1.SubscribeRequest
+	(*SubscribeResponse)(nil),   // 23: mindseye.module.v1.SubscribeResponse
+	(*SearchRequest)(nil),       // 24: mindseye.module.v1.SearchRequest
+	(*SearchResponse)(nil),      // 25: mindseye.module.v1.SearchResponse
+	(*ActionsRequest)(nil),      // 26: mindseye.module.v1.ActionsRequest
+	(*ActionsResponse)(nil),     // 27: mindseye.module.v1.ActionsResponse
+	(*Action)(nil),              // 28: mindseye.module.v1.Action
+	(*Param)(nil),               // 29: mindseye.module.v1.Param
+	(*DoRequest)(nil),           // 30: mindseye.module.v1.DoRequest
+	(*DoResponse)(nil),          // 31: mindseye.module.v1.DoResponse
+	(*ChangeSet)(nil),           // 32: mindseye.module.v1.ChangeSet
+	(*Entity)(nil),              // 33: mindseye.module.v1.Entity
+	(*EdgeKey)(nil),             // 34: mindseye.module.v1.EdgeKey
+	(*Edge)(nil),                // 35: mindseye.module.v1.Edge
+	(*Event)(nil),               // 36: mindseye.module.v1.Event
+	(*Value)(nil),               // 37: mindseye.module.v1.Value
+	(*ValueList)(nil),           // 38: mindseye.module.v1.ValueList
+	(*Metric)(nil),              // 39: mindseye.module.v1.Metric
+	(*TimeWindow)(nil),          // 40: mindseye.module.v1.TimeWindow
+	(*SeriesQuery)(nil),         // 41: mindseye.module.v1.SeriesQuery
+	(*Filter)(nil),              // 42: mindseye.module.v1.Filter
+	(*Predicate)(nil),           // 43: mindseye.module.v1.Predicate
+	(*SeriesRef)(nil),           // 44: mindseye.module.v1.SeriesRef
+	(*Series)(nil),              // 45: mindseye.module.v1.Series
+	(*EventQuery)(nil),          // 46: mindseye.module.v1.EventQuery
+	nil,                         // 47: mindseye.module.v1.DoRequest.ParamsEntry
+	nil,                         // 48: mindseye.module.v1.Entity.AttrsEntry
+	nil,                         // 49: mindseye.module.v1.Edge.AttrsEntry
+	nil,                         // 50: mindseye.module.v1.Event.FieldsEntry
 }
 var file_mindseye_module_v1_module_proto_depIdxs = []int32{
-	3,  // 0: mindseye.module.v1.InfoRequest.host:type_name -> mindseye.module.v1.Version
-	3,  // 1: mindseye.module.v1.InfoResponse.module:type_name -> mindseye.module.v1.Version
-	8,  // 2: mindseye.module.v1.ConfigureRequest.options:type_name -> mindseye.module.v1.YamlNode
-	8,  // 3: mindseye.module.v1.YamlNode.content:type_name -> mindseye.module.v1.YamlNode
-	25, // 4: mindseye.module.v1.RunResponse.change_set:type_name -> mindseye.module.v1.ChangeSet
-	25, // 5: mindseye.module.v1.DiscoverResponse.change_set:type_name -> mindseye.module.v1.ChangeSet
-	32, // 6: mindseye.module.v1.MetricsResponse.metrics:type_name -> mindseye.module.v1.Metric
-	34, // 7: mindseye.module.v1.QuerySeriesRequest.query:type_name -> mindseye.module.v1.SeriesQuery
-	38, // 8: mindseye.module.v1.QuerySeriesResponse.series:type_name -> mindseye.module.v1.Series
-	39, // 9: mindseye.module.v1.QueryEventsRequest.query:type_name -> mindseye.module.v1.EventQuery
-	29, // 10: mindseye.module.v1.QueryEventsResponse.events:type_name -> mindseye.module.v1.Event
-	34, // 11: mindseye.module.v1.SubscribeRequest.query:type_name -> mindseye.module.v1.SeriesQuery
-	38, // 12: mindseye.module.v1.SubscribeResponse.series:type_name -> mindseye.module.v1.Series
-	27, // 13: mindseye.module.v1.ChangeSet.remove_edges:type_name -> mindseye.module.v1.EdgeKey
-	26, // 14: mindseye.module.v1.ChangeSet.upserts:type_name -> mindseye.module.v1.Entity
-	28, // 15: mindseye.module.v1.ChangeSet.edges:type_name -> mindseye.module.v1.Edge
-	29, // 16: mindseye.module.v1.ChangeSet.events:type_name -> mindseye.module.v1.Event
-	40, // 17: mindseye.module.v1.Entity.attrs:type_name -> mindseye.module.v1.Entity.AttrsEntry
-	0,  // 18: mindseye.module.v1.Entity.status:type_name -> mindseye.module.v1.StatusLevel
-	41, // 19: mindseye.module.v1.Edge.attrs:type_name -> mindseye.module.v1.Edge.AttrsEntry
-	1,  // 20: mindseye.module.v1.Event.severity:type_name -> mindseye.module.v1.Severity
-	42, // 21: mindseye.module.v1.Event.fields:type_name -> mindseye.module.v1.Event.FieldsEntry
-	31, // 22: mindseye.module.v1.Value.list_value:type_name -> mindseye.module.v1.ValueList
-	30, // 23: mindseye.module.v1.ValueList.values:type_name -> mindseye.module.v1.Value
-	35, // 24: mindseye.module.v1.SeriesQuery.filter:type_name -> mindseye.module.v1.Filter
-	33, // 25: mindseye.module.v1.SeriesQuery.window:type_name -> mindseye.module.v1.TimeWindow
-	2,  // 26: mindseye.module.v1.SeriesQuery.agg:type_name -> mindseye.module.v1.Aggregation
-	0,  // 27: mindseye.module.v1.Filter.statuses:type_name -> mindseye.module.v1.StatusLevel
-	36, // 28: mindseye.module.v1.Filter.attrs:type_name -> mindseye.module.v1.Predicate
-	37, // 29: mindseye.module.v1.Series.ref:type_name -> mindseye.module.v1.SeriesRef
-	33, // 30: mindseye.module.v1.EventQuery.window:type_name -> mindseye.module.v1.TimeWindow
-	1,  // 31: mindseye.module.v1.EventQuery.min_severity:type_name -> mindseye.module.v1.Severity
-	30, // 32: mindseye.module.v1.Entity.AttrsEntry.value:type_name -> mindseye.module.v1.Value
-	30, // 33: mindseye.module.v1.Edge.AttrsEntry.value:type_name -> mindseye.module.v1.Value
-	30, // 34: mindseye.module.v1.Event.FieldsEntry.value:type_name -> mindseye.module.v1.Value
-	4,  // 35: mindseye.module.v1.ModuleService.Info:input_type -> mindseye.module.v1.InfoRequest
-	6,  // 36: mindseye.module.v1.ModuleService.Configure:input_type -> mindseye.module.v1.ConfigureRequest
-	9,  // 37: mindseye.module.v1.ModuleService.Health:input_type -> mindseye.module.v1.HealthRequest
-	11, // 38: mindseye.module.v1.ModuleService.Run:input_type -> mindseye.module.v1.RunRequest
-	13, // 39: mindseye.module.v1.ModuleService.Discover:input_type -> mindseye.module.v1.DiscoverRequest
-	15, // 40: mindseye.module.v1.ModuleService.Metrics:input_type -> mindseye.module.v1.MetricsRequest
-	17, // 41: mindseye.module.v1.ModuleService.QuerySeries:input_type -> mindseye.module.v1.QuerySeriesRequest
-	19, // 42: mindseye.module.v1.ModuleService.QueryEvents:input_type -> mindseye.module.v1.QueryEventsRequest
-	21, // 43: mindseye.module.v1.ModuleService.Subscribe:input_type -> mindseye.module.v1.SubscribeRequest
-	23, // 44: mindseye.module.v1.ModuleService.Search:input_type -> mindseye.module.v1.SearchRequest
-	5,  // 45: mindseye.module.v1.ModuleService.Info:output_type -> mindseye.module.v1.InfoResponse
-	7,  // 46: mindseye.module.v1.ModuleService.Configure:output_type -> mindseye.module.v1.ConfigureResponse
-	10, // 47: mindseye.module.v1.ModuleService.Health:output_type -> mindseye.module.v1.HealthResponse
-	12, // 48: mindseye.module.v1.ModuleService.Run:output_type -> mindseye.module.v1.RunResponse
-	14, // 49: mindseye.module.v1.ModuleService.Discover:output_type -> mindseye.module.v1.DiscoverResponse
-	16, // 50: mindseye.module.v1.ModuleService.Metrics:output_type -> mindseye.module.v1.MetricsResponse
-	18, // 51: mindseye.module.v1.ModuleService.QuerySeries:output_type -> mindseye.module.v1.QuerySeriesResponse
-	20, // 52: mindseye.module.v1.ModuleService.QueryEvents:output_type -> mindseye.module.v1.QueryEventsResponse
-	22, // 53: mindseye.module.v1.ModuleService.Subscribe:output_type -> mindseye.module.v1.SubscribeResponse
-	24, // 54: mindseye.module.v1.ModuleService.Search:output_type -> mindseye.module.v1.SearchResponse
-	45, // [45:55] is the sub-list for method output_type
-	35, // [35:45] is the sub-list for method input_type
-	35, // [35:35] is the sub-list for extension type_name
-	35, // [35:35] is the sub-list for extension extendee
-	0,  // [0:35] is the sub-list for field type_name
+	4,  // 0: mindseye.module.v1.InfoRequest.host:type_name -> mindseye.module.v1.Version
+	4,  // 1: mindseye.module.v1.InfoResponse.module:type_name -> mindseye.module.v1.Version
+	9,  // 2: mindseye.module.v1.ConfigureRequest.options:type_name -> mindseye.module.v1.YamlNode
+	9,  // 3: mindseye.module.v1.YamlNode.content:type_name -> mindseye.module.v1.YamlNode
+	32, // 4: mindseye.module.v1.RunResponse.change_set:type_name -> mindseye.module.v1.ChangeSet
+	32, // 5: mindseye.module.v1.DiscoverResponse.change_set:type_name -> mindseye.module.v1.ChangeSet
+	39, // 6: mindseye.module.v1.MetricsResponse.metrics:type_name -> mindseye.module.v1.Metric
+	41, // 7: mindseye.module.v1.QuerySeriesRequest.query:type_name -> mindseye.module.v1.SeriesQuery
+	45, // 8: mindseye.module.v1.QuerySeriesResponse.series:type_name -> mindseye.module.v1.Series
+	46, // 9: mindseye.module.v1.QueryEventsRequest.query:type_name -> mindseye.module.v1.EventQuery
+	36, // 10: mindseye.module.v1.QueryEventsResponse.events:type_name -> mindseye.module.v1.Event
+	41, // 11: mindseye.module.v1.SubscribeRequest.query:type_name -> mindseye.module.v1.SeriesQuery
+	45, // 12: mindseye.module.v1.SubscribeResponse.series:type_name -> mindseye.module.v1.Series
+	28, // 13: mindseye.module.v1.ActionsResponse.actions:type_name -> mindseye.module.v1.Action
+	29, // 14: mindseye.module.v1.Action.params:type_name -> mindseye.module.v1.Param
+	0,  // 15: mindseye.module.v1.Param.type:type_name -> mindseye.module.v1.ParamType
+	47, // 16: mindseye.module.v1.DoRequest.params:type_name -> mindseye.module.v1.DoRequest.ParamsEntry
+	34, // 17: mindseye.module.v1.ChangeSet.remove_edges:type_name -> mindseye.module.v1.EdgeKey
+	33, // 18: mindseye.module.v1.ChangeSet.upserts:type_name -> mindseye.module.v1.Entity
+	35, // 19: mindseye.module.v1.ChangeSet.edges:type_name -> mindseye.module.v1.Edge
+	36, // 20: mindseye.module.v1.ChangeSet.events:type_name -> mindseye.module.v1.Event
+	48, // 21: mindseye.module.v1.Entity.attrs:type_name -> mindseye.module.v1.Entity.AttrsEntry
+	1,  // 22: mindseye.module.v1.Entity.status:type_name -> mindseye.module.v1.StatusLevel
+	49, // 23: mindseye.module.v1.Edge.attrs:type_name -> mindseye.module.v1.Edge.AttrsEntry
+	2,  // 24: mindseye.module.v1.Event.severity:type_name -> mindseye.module.v1.Severity
+	50, // 25: mindseye.module.v1.Event.fields:type_name -> mindseye.module.v1.Event.FieldsEntry
+	38, // 26: mindseye.module.v1.Value.list_value:type_name -> mindseye.module.v1.ValueList
+	37, // 27: mindseye.module.v1.ValueList.values:type_name -> mindseye.module.v1.Value
+	42, // 28: mindseye.module.v1.SeriesQuery.filter:type_name -> mindseye.module.v1.Filter
+	40, // 29: mindseye.module.v1.SeriesQuery.window:type_name -> mindseye.module.v1.TimeWindow
+	3,  // 30: mindseye.module.v1.SeriesQuery.agg:type_name -> mindseye.module.v1.Aggregation
+	1,  // 31: mindseye.module.v1.Filter.statuses:type_name -> mindseye.module.v1.StatusLevel
+	43, // 32: mindseye.module.v1.Filter.attrs:type_name -> mindseye.module.v1.Predicate
+	44, // 33: mindseye.module.v1.Series.ref:type_name -> mindseye.module.v1.SeriesRef
+	40, // 34: mindseye.module.v1.EventQuery.window:type_name -> mindseye.module.v1.TimeWindow
+	2,  // 35: mindseye.module.v1.EventQuery.min_severity:type_name -> mindseye.module.v1.Severity
+	37, // 36: mindseye.module.v1.Entity.AttrsEntry.value:type_name -> mindseye.module.v1.Value
+	37, // 37: mindseye.module.v1.Edge.AttrsEntry.value:type_name -> mindseye.module.v1.Value
+	37, // 38: mindseye.module.v1.Event.FieldsEntry.value:type_name -> mindseye.module.v1.Value
+	5,  // 39: mindseye.module.v1.ModuleService.Info:input_type -> mindseye.module.v1.InfoRequest
+	7,  // 40: mindseye.module.v1.ModuleService.Configure:input_type -> mindseye.module.v1.ConfigureRequest
+	10, // 41: mindseye.module.v1.ModuleService.Health:input_type -> mindseye.module.v1.HealthRequest
+	12, // 42: mindseye.module.v1.ModuleService.Run:input_type -> mindseye.module.v1.RunRequest
+	14, // 43: mindseye.module.v1.ModuleService.Discover:input_type -> mindseye.module.v1.DiscoverRequest
+	16, // 44: mindseye.module.v1.ModuleService.Metrics:input_type -> mindseye.module.v1.MetricsRequest
+	18, // 45: mindseye.module.v1.ModuleService.QuerySeries:input_type -> mindseye.module.v1.QuerySeriesRequest
+	20, // 46: mindseye.module.v1.ModuleService.QueryEvents:input_type -> mindseye.module.v1.QueryEventsRequest
+	22, // 47: mindseye.module.v1.ModuleService.Subscribe:input_type -> mindseye.module.v1.SubscribeRequest
+	24, // 48: mindseye.module.v1.ModuleService.Search:input_type -> mindseye.module.v1.SearchRequest
+	26, // 49: mindseye.module.v1.ModuleService.Actions:input_type -> mindseye.module.v1.ActionsRequest
+	30, // 50: mindseye.module.v1.ModuleService.Do:input_type -> mindseye.module.v1.DoRequest
+	6,  // 51: mindseye.module.v1.ModuleService.Info:output_type -> mindseye.module.v1.InfoResponse
+	8,  // 52: mindseye.module.v1.ModuleService.Configure:output_type -> mindseye.module.v1.ConfigureResponse
+	11, // 53: mindseye.module.v1.ModuleService.Health:output_type -> mindseye.module.v1.HealthResponse
+	13, // 54: mindseye.module.v1.ModuleService.Run:output_type -> mindseye.module.v1.RunResponse
+	15, // 55: mindseye.module.v1.ModuleService.Discover:output_type -> mindseye.module.v1.DiscoverResponse
+	17, // 56: mindseye.module.v1.ModuleService.Metrics:output_type -> mindseye.module.v1.MetricsResponse
+	19, // 57: mindseye.module.v1.ModuleService.QuerySeries:output_type -> mindseye.module.v1.QuerySeriesResponse
+	21, // 58: mindseye.module.v1.ModuleService.QueryEvents:output_type -> mindseye.module.v1.QueryEventsResponse
+	23, // 59: mindseye.module.v1.ModuleService.Subscribe:output_type -> mindseye.module.v1.SubscribeResponse
+	25, // 60: mindseye.module.v1.ModuleService.Search:output_type -> mindseye.module.v1.SearchResponse
+	27, // 61: mindseye.module.v1.ModuleService.Actions:output_type -> mindseye.module.v1.ActionsResponse
+	31, // 62: mindseye.module.v1.ModuleService.Do:output_type -> mindseye.module.v1.DoResponse
+	51, // [51:63] is the sub-list for method output_type
+	39, // [39:51] is the sub-list for method input_type
+	39, // [39:39] is the sub-list for extension type_name
+	39, // [39:39] is the sub-list for extension extendee
+	0,  // [0:39] is the sub-list for field type_name
 }
 
 func init() { file_mindseye_module_v1_module_proto_init() }
@@ -2838,23 +3313,23 @@ func file_mindseye_module_v1_module_proto_init() {
 		return
 	}
 	file_mindseye_module_v1_module_proto_msgTypes[7].OneofWrappers = []any{}
-	file_mindseye_module_v1_module_proto_msgTypes[23].OneofWrappers = []any{}
-	file_mindseye_module_v1_module_proto_msgTypes[26].OneofWrappers = []any{}
-	file_mindseye_module_v1_module_proto_msgTypes[27].OneofWrappers = []any{
+	file_mindseye_module_v1_module_proto_msgTypes[29].OneofWrappers = []any{}
+	file_mindseye_module_v1_module_proto_msgTypes[32].OneofWrappers = []any{}
+	file_mindseye_module_v1_module_proto_msgTypes[33].OneofWrappers = []any{
 		(*Value_StringValue)(nil),
 		(*Value_NumberValue)(nil),
 		(*Value_BoolValue)(nil),
 		(*Value_TimeValue)(nil),
 		(*Value_ListValue)(nil),
 	}
-	file_mindseye_module_v1_module_proto_msgTypes[30].OneofWrappers = []any{}
+	file_mindseye_module_v1_module_proto_msgTypes[36].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_mindseye_module_v1_module_proto_rawDesc), len(file_mindseye_module_v1_module_proto_rawDesc)),
-			NumEnums:      3,
-			NumMessages:   40,
+			NumEnums:      4,
+			NumMessages:   47,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

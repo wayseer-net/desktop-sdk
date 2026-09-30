@@ -19,6 +19,9 @@ func (s *session) checkActions(world *model.Snapshot) error {
 		return fmt.Errorf("%w: not an Actor", ErrSkipped)
 	}
 	acts := a.Actions()
+	if len(acts) == 0 { // an external module is an Actor whether or not its process offers any
+		return fmt.Errorf("%w: offers no actions", ErrSkipped)
+	}
 	if err := sdk.ValidateActions(acts); err != nil {
 		return err
 	}
