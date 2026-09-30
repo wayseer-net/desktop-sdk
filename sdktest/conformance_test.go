@@ -28,6 +28,7 @@ const (
 	invalidAction
 	actsWhenCancelled
 	negativeTraffic
+	placeOffEarth
 )
 
 type fakeOptions struct {
@@ -96,7 +97,11 @@ func (f *fake) host(i int) sdk.Entity {
 	}
 	name := fmt.Sprintf("h%d", i)
 	r, _ := sdk.NewEntityRef(string(src), sdk.KindHost, name)
-	return sdk.Entity{Ref: r, Kind: sdk.KindHost, Name: name, Source: src}
+	place := sdk.At(52.37, 4.9)
+	if f.flaw == placeOffEarth {
+		place.Lat = 152.37
+	}
+	return sdk.Entity{Ref: r, Kind: sdk.KindHost, Name: name, Source: src, Place: place}
 }
 
 func (f *fake) Discover(ctx context.Context) (*sdk.ChangeSet, error) {
@@ -216,6 +221,7 @@ func TestEachFlawFailsItsCheck(t *testing.T) {
 		invalidAction:       {CheckActions},
 		actsWhenCancelled:   {CheckActions},
 		negativeTraffic:     {CheckSnapshot, CheckDiscover},
+		placeOffEarth:       {CheckSnapshot, CheckDiscover},
 	}
 	for fl, want := range cases {
 		t.Run(fmt.Sprint(want), func(t *testing.T) {

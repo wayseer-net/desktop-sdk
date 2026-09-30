@@ -215,6 +215,14 @@ message Entity {
   string source = 8;
   // Unix nanoseconds; absent for the zero time.
   optional sint64 seen = 9;
+  // Since 1.5; absent means no place is known.
+  Place place = 10;
+}
+
+// Where an entity is on Earth, in degrees: latitude -90 to 90, longitude -180 to 180.
+message Place {
+  double lat = 1;
+  double lon = 2;
 }
 
 message EdgeKey {

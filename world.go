@@ -19,6 +19,8 @@ type (
 	Kind = model.Kind
 	// Edge relates two entities.
 	Edge = model.Edge
+	// Place is where an entity is on Earth, in degrees.
+	Place = model.Place
 	// Traffic is a rate per second along an edge, in a unit.
 	Traffic = model.Traffic
 	// TrafficUnit is what an edge's traffic counts.
@@ -129,6 +131,9 @@ const (
 	TrafficBytes    = model.TrafficBytes
 	TrafficMessages = model.TrafficMessages
 )
+
+// At is the known place at a latitude and longitude, in degrees.
+func At(lat, lon float32) Place { return model.At(lat, lon) }
 
 // ParseTrafficUnit reads a traffic unit's name: requests, bytes or messages.
 func ParseTrafficUnit(s string) (TrafficUnit, error) { return model.ParseTrafficUnit(s) }

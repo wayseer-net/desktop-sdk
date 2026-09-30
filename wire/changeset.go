@@ -34,7 +34,7 @@ func encodeEntity(e sdk.Entity) *pb.Entity {
 	return &pb.Entity{
 		Ref: string(e.Ref), Kind: string(e.Kind), Name: e.Name, Attrs: encodeAttrs(e.Attrs),
 		Status: pb.StatusLevel(e.Status.Level), Reason: e.Status.Reason, Tags: e.Tags,
-		Source: string(e.Source), Seen: encodeTime(e.Seen),
+		Source: string(e.Source), Seen: encodeTime(e.Seen), Place: encodePlace(e.Place),
 	}
 }
 
@@ -43,7 +43,23 @@ func decodeEntity(e *pb.Entity) sdk.Entity {
 		Ref: sdk.EntityRef(e.GetRef()), Kind: sdk.Kind(e.GetKind()), Name: e.GetName(), Attrs: decodeAttrs(e.GetAttrs()),
 		Status: sdk.Status{Level: sdk.StatusLevel(e.GetStatus()), Reason: e.GetReason()},
 		Tags:   convertStrings[string](e.GetTags()), Source: sdk.ModuleID(e.GetSource()), Seen: decodeTime(e.Seen),
+		Place: decodePlace(e.GetPlace()),
 	}
+}
+
+// encodePlace leaves an unknown place absent, as a 1.4 module sends it.
+func encodePlace(p sdk.Place) *pb.Place {
+	if !p.Known {
+		return nil
+	}
+	return &pb.Place{Lat: float64(p.Lat), Lon: float64(p.Lon)}
+}
+
+func decodePlace(p *pb.Place) sdk.Place {
+	if p == nil {
+		return sdk.Place{}
+	}
+	return sdk.At(float32(p.GetLat()), float32(p.GetLon()))
 }
 
 func encodeEdgeKey(k sdk.EdgeKey) *pb.EdgeKey {

@@ -65,6 +65,9 @@ func randomEntity(r *rand.Rand) sdk.Entity {
 		Status: sdk.Status{Level: sdk.StatusLevel(r.Intn(5)), Reason: fmt.Sprint(r.Int())},
 		Source: "m", Seen: randomTime(r),
 	}
+	if r.Intn(2) == 0 {
+		e.Place = sdk.At(float32(r.Float64()*180-90), float32(r.Float64()*360-180))
+	}
 	for range r.Intn(3) {
 		e.Tags = append(e.Tags, fmt.Sprint(r.Intn(10)))
 	}
@@ -130,6 +133,21 @@ func TestAnEdgeFromAnOlderModuleCarriesNoTraffic(t *testing.T) {
 	cs := DecodeChangeSet(&pb.ChangeSet{Edges: []*pb.Edge{{From: "m/host/a", To: "m/host/b", Rel: "talks_to", Source: "m"}}})
 	if got := cs.Edges[0].Traffic; got != (sdk.Traffic{}) {
 		t.Errorf("traffic %+v; want none", got)
+	}
+}
+
+func TestAnEntityFromAnOlderModuleHasNoPlace(t *testing.T) {
+	cs := DecodeChangeSet(&pb.ChangeSet{Upserts: []*pb.Entity{{Ref: "m/host/a", Kind: "host", Source: "m"}}})
+	if got := cs.Upserts[0].Place; got != (sdk.Place{}) {
+		t.Errorf("place %+v; want none", got)
+	}
+}
+
+func TestAPlaceOffEarthIsRefused(t *testing.T) {
+	e := &pb.Entity{Ref: "m/host/a", Kind: "host", Source: "m", Place: &pb.Place{Lat: 95, Lon: 0}}
+	got := DecodeChangeSet(&pb.ChangeSet{Upserts: []*pb.Entity{e}}).Upserts[0]
+	if err := got.Validate(); err == nil {
+		t.Error("a latitude of 95 validated")
 	}
 }
 
