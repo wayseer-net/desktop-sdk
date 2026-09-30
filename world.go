@@ -116,6 +116,12 @@ const (
 	UnitPerSec  = model.UnitPerSec
 )
 
+// Why a Resolver finds no one entity.
+var (
+	ErrNoMatch   = model.ErrNoMatch
+	ErrAmbiguous = model.ErrAmbiguous
+)
+
 // Traffic units.
 const (
 	TrafficNone     = model.TrafficNone

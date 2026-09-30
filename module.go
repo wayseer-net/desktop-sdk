@@ -29,6 +29,11 @@ type (
 	Subscriber = module.Subscriber
 	// Searcher finds the module's entities by free text.
 	Searcher = module.Searcher
+	// WorldUser is a module that links what it reads to what other modules found.
+	WorldUser = module.WorldUser
+	// Resolver finds the entity a value names in the world, by name or the identity rules.
+	Resolver = module.Resolver
+
 	// TopRanker is a SeriesQuerier that answers SeriesQuery.Top with only the top entities.
 	TopRanker = module.TopRanker
 
