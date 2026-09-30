@@ -13,9 +13,10 @@ import (
 // and these conversions are changed with it.
 func TestTheContractCarriesEverySDKField(t *testing.T) {
 	carried := map[reflect.Type][]string{
-		reflect.TypeFor[sdk.ChangeSet]():   {"Removes", "RemoveEdges", "Upserts", "Edges", "Events"},
-		reflect.TypeFor[sdk.Entity]():      {"Ref", "Kind", "Name", "Attrs", "Status", "Tags", "Source", "Seen", "Place"},
-		reflect.TypeFor[sdk.Place]():       {"Lat", "Lon", "Known"},
+		reflect.TypeFor[sdk.ChangeSet](): {"Removes", "RemoveEdges", "Upserts", "Edges", "Events"},
+		reflect.TypeFor[sdk.Entity]():    {"Ref", "Kind", "Name", "Attrs", "Status", "Tags", "Source", "Seen", "Place"},
+		// From is set by the host's store; a module's place is always its own.
+		reflect.TypeFor[sdk.Place]():       {"Lat", "Lon", "Known", "From"},
 		reflect.TypeFor[sdk.Status]():      {"Level", "Reason"},
 		reflect.TypeFor[sdk.EdgeKey]():     {"From", "To", "Rel"},
 		reflect.TypeFor[sdk.Edge]():        {"From", "To", "Rel", "Weight", "Attrs", "Source", "Traffic"},
