@@ -3,11 +3,11 @@ package sdk
 import (
 	"errors"
 	"fmt"
-	"mindseye/internal/kernel"
-	"mindseye/internal/secret"
 	"os"
 	"path/filepath"
 	"strings"
+	"wayseer/internal/kernel"
+	"wayseer/internal/secret"
 )
 
 // Secret is a credential; every way of printing it shows [redacted]. Reveal gives the value, for

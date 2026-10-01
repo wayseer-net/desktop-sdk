@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"mindseye/internal/data"
-	"mindseye/pkg/sdk"
 	"sync"
 	"testing"
 	"time"
+	"wayseer/internal/data"
+	"wayseer/pkg/sdk"
 
 	"go.yaml.in/yaml/v3"
 )

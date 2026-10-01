@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"mindseye/internal/data"
-	"mindseye/internal/model"
-	"mindseye/pkg/sdk"
 	"time"
+	"wayseer/internal/data"
+	"wayseer/internal/model"
+	"wayseer/pkg/sdk"
 )
 
 // cancelLimit is how soon Run must return once its context is cancelled.

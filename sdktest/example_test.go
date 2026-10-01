@@ -3,9 +3,9 @@ package sdktest_test
 import (
 	"context"
 	"fmt"
-	"mindseye/pkg/sdk"
-	"mindseye/pkg/sdk/sdktest"
 	"time"
+	"wayseer/pkg/sdk"
+	"wayseer/pkg/sdk/sdktest"
 )
 
 // clock is a module with one entity, sent once and confirmed each second.

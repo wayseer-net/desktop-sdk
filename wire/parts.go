@@ -1,7 +1,7 @@
 package wire
 
 import (
-	pb "mindseye/pkg/sdk/proto/modulev1"
+	pb "wayseer/pkg/sdk/proto/modulev1"
 
 	"google.golang.org/protobuf/encoding/protowire"
 	"google.golang.org/protobuf/proto"

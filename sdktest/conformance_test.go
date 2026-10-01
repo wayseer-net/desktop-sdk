@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"mindseye/pkg/sdk"
 	"strings"
 	"testing"
 	"time"
+	"wayseer/pkg/sdk"
 )
 
 // flaw is one way the fake module can break the contract.

@@ -2,8 +2,8 @@ package wire
 
 import (
 	"maps"
-	"mindseye/pkg/sdk"
-	pb "mindseye/pkg/sdk/proto/modulev1"
+	"wayseer/pkg/sdk"
+	pb "wayseer/pkg/sdk/proto/modulev1"
 )
 
 // EncodeActions converts a module's catalogue to the contract.

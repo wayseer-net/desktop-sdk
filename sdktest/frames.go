@@ -2,10 +2,10 @@ package sdktest
 
 import (
 	"context"
-	"mindseye/internal/data"
-	"mindseye/internal/model"
-	"mindseye/pkg/sdk"
 	"sync"
+	"wayseer/internal/data"
+	"wayseer/internal/model"
+	"wayseer/pkg/sdk"
 )
 
 // Frames is a Sink that feeds the app's coalescer, which commits what arrived since the last

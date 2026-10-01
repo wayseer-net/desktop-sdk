@@ -1,9 +1,9 @@
 package sdk
 
 import (
-	"mindseye/internal/data"
-	"mindseye/internal/module"
 	"time"
+	"wayseer/internal/data"
+	"wayseer/internal/module"
 )
 
 // The module contract; see the internal package for each method's rules.

@@ -3,12 +3,12 @@ package serve
 import (
 	"context"
 	"fmt"
-	"mindseye/pkg/sdk"
-	pb "mindseye/pkg/sdk/proto/modulev1"
-	"mindseye/pkg/sdk/wire"
 	"os"
 	"runtime/debug"
 	"sync"
+	"wayseer/pkg/sdk"
+	pb "wayseer/pkg/sdk/proto/modulev1"
+	"wayseer/pkg/sdk/wire"
 
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"

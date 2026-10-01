@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"mindseye/internal/model"
-	"mindseye/pkg/sdk"
 	"slices"
 	"time"
+	"wayseer/internal/model"
+	"wayseer/pkg/sdk"
 )
 
 // queryWindow is the recent window the query checks ask about.

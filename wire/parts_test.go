@@ -3,10 +3,10 @@ package wire
 import (
 	"fmt"
 	"math/rand"
-	"mindseye/pkg/sdk"
 	"reflect"
 	"testing"
 	"testing/quick"
+	"wayseer/pkg/sdk"
 
 	"google.golang.org/protobuf/proto"
 )

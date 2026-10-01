@@ -2,7 +2,7 @@ package serve
 
 import (
 	"context"
-	pb "mindseye/pkg/sdk/proto/modulev1"
+	pb "wayseer/pkg/sdk/proto/modulev1"
 
 	"github.com/hashicorp/go-plugin"
 	"google.golang.org/grpc"

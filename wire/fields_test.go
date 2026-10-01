@@ -1,12 +1,12 @@
 package wire
 
 import (
-	"mindseye/internal/data"
-	"mindseye/pkg/sdk"
-	pb "mindseye/pkg/sdk/proto/modulev1"
 	"reflect"
 	"strings"
 	"testing"
+	"wayseer/internal/data"
+	"wayseer/pkg/sdk"
+	pb "wayseer/pkg/sdk/proto/modulev1"
 )
 
 // TestTheContractCarriesEverySDKField fails when an SDK type gains a field, so the contract

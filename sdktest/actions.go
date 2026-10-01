@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"mindseye/internal/model"
-	"mindseye/pkg/sdk"
 	"slices"
 	"strconv"
 	"time"
+	"wayseer/internal/model"
+	"wayseer/pkg/sdk"
 )
 
 // checkActions requires a valid catalogue, and Do with a cancelled context to fail promptly.

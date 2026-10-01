@@ -1,8 +1,8 @@
 package wire
 
 import (
-	"mindseye/pkg/sdk"
-	pb "mindseye/pkg/sdk/proto/modulev1"
+	"wayseer/pkg/sdk"
+	pb "wayseer/pkg/sdk/proto/modulev1"
 )
 
 // EncodeChangeSet converts cs to the contract; nil encodes as empty.

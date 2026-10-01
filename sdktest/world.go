@@ -1,10 +1,10 @@
 package sdktest
 
 import (
-	"mindseye/internal/model/worldfile"
-	"mindseye/pkg/sdk"
 	"os"
 	"testing"
+	"wayseer/internal/model/worldfile"
+	"wayseer/pkg/sdk"
 )
 
 // RecordWorld writes cs's entities and edges, sorted, one JSON line each, so a module's world

@@ -3,10 +3,10 @@ package wire
 import (
 	"fmt"
 	"math"
-	"mindseye/internal/data"
-	"mindseye/pkg/sdk"
-	pb "mindseye/pkg/sdk/proto/modulev1"
 	"time"
+	"wayseer/internal/data"
+	"wayseer/pkg/sdk"
+	pb "wayseer/pkg/sdk/proto/modulev1"
 )
 
 // EncodeMetrics converts a metric catalogue to the contract.

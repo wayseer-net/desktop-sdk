@@ -2,11 +2,11 @@ package sdktest
 
 import (
 	"context"
-	"mindseye/pkg/sdk"
 	"slices"
 	"sync"
 	"testing"
 	"time"
+	"wayseer/pkg/sdk"
 )
 
 // Sink records what a module sends, snapshot first.

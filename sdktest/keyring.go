@@ -1,8 +1,8 @@
 package sdktest
 
 import (
-	"mindseye/internal/secret"
 	"testing"
+	"wayseer/internal/secret"
 )
 
 // Keyring makes the keyring hold entries, keyed <service>/<account>, for the rest of the test,

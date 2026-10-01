@@ -1,10 +1,10 @@
 package sdktest
 
 import (
-	"mindseye/pkg/sdk"
 	"os"
 	"path/filepath"
 	"testing"
+	"wayseer/pkg/sdk"
 )
 
 func TestARecordedWorldLoadsBack(t *testing.T) {

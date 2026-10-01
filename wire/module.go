@@ -2,8 +2,8 @@ package wire
 
 import (
 	"errors"
-	"mindseye/pkg/sdk"
-	pb "mindseye/pkg/sdk/proto/modulev1"
+	"wayseer/pkg/sdk"
+	pb "wayseer/pkg/sdk/proto/modulev1"
 
 	"go.yaml.in/yaml/v3"
 )

@@ -3,10 +3,10 @@ package sdk_test
 import (
 	"context"
 	"fmt"
-	"mindseye/pkg/sdk"
-	"mindseye/pkg/sdk/sdktest"
 	"os"
 	"time"
+	"wayseer/pkg/sdk"
+	"wayseer/pkg/sdk/sdktest"
 )
 
 // hosts describes a fixed list of hosts named in its options.

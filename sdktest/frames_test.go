@@ -2,8 +2,8 @@ package sdktest
 
 import (
 	"context"
-	"mindseye/pkg/sdk"
 	"testing"
+	"wayseer/pkg/sdk"
 )
 
 func TestFramesCommitOncePerFlush(t *testing.T) {

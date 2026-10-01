@@ -1,8 +1,8 @@
 package sdk
 
 import (
-	"mindseye/internal/data"
 	"time"
+	"wayseer/internal/data"
 )
 
 // Series and the queries over them.

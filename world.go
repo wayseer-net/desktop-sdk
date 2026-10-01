@@ -1,8 +1,8 @@
 package sdk
 
 import (
-	"mindseye/internal/model"
 	"time"
+	"wayseer/internal/model"
 )
 
 // The world-model types a module sends.

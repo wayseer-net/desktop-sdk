@@ -2,12 +2,12 @@ package sdk_test
 
 import (
 	"fmt"
-	"mindseye/internal/secret"
-	"mindseye/pkg/sdk"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+	"wayseer/internal/secret"
+	"wayseer/pkg/sdk"
 )
 
 const token = "s3cr3t-t0ken"

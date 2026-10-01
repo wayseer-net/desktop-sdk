@@ -1,10 +1,10 @@
 // The Tier 2 module contract: a module in its own process, speaking to the app over gRPC.
-// Each service method and message mirrors a Tier 1 method or type in mindseye/pkg/sdk.
+// Each service method and message mirrors a Tier 1 method or type in wayseer/pkg/sdk.
 syntax = "proto3";
 
 package mindseye.module.v1;
 
-option go_package = "mindseye/pkg/sdk/proto/modulev1";
+option go_package = "wayseer/pkg/sdk/proto/modulev1";
 
 // Module is served by the module's process and called by the app.
 service ModuleService {
