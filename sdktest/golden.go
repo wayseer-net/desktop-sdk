@@ -1,8 +1,11 @@
 package sdktest
 
 import (
+	"bytes"
+	"compress/gzip"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -11,19 +14,19 @@ import (
 )
 
 // Golden compares got with the file at path, relative to the test's package; with
-// UPDATE_SNAPSHOTS=1 it writes the file instead, for review.
+// UPDATE_SNAPSHOTS=1 it writes the file instead, for review. A path ending in .gz is gzipped.
 func Golden(t testing.TB, path, got string) {
 	t.Helper()
 	if os.Getenv("UPDATE_SNAPSHOTS") != "" {
 		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 			t.Fatalf("%v", err)
 		}
-		if err := os.WriteFile(path, []byte(got), 0o644); err != nil {
+		if err := os.WriteFile(path, packed(path, got), 0o644); err != nil {
 			t.Fatalf("%v", err)
 		}
 		return
 	}
-	want, err := os.ReadFile(path)
+	want, err := unpacked(path)
 	switch {
 	case errors.Is(err, os.ErrNotExist):
 		t.Fatalf("missing snapshot %s; run with UPDATE_SNAPSHOTS=1 and review it", path)
@@ -51,4 +54,29 @@ func firstDiff(want, got string) string {
 		}
 	}
 	return "no line"
+}
+
+// packed is s as path holds it: gzipped when path ends in .gz.
+func packed(path, s string) []byte {
+	if !strings.HasSuffix(path, ".gz") {
+		return []byte(s)
+	}
+	var b bytes.Buffer
+	z := gzip.NewWriter(&b)
+	_, _ = z.Write([]byte(s)) // writes to a buffer never fail
+	_ = z.Close()
+	return b.Bytes()
+}
+
+// unpacked reads path, gunzipping it when its name ends in .gz.
+func unpacked(path string) ([]byte, error) {
+	raw, err := os.ReadFile(path)
+	if err != nil || !strings.HasSuffix(path, ".gz") {
+		return raw, err
+	}
+	z, err := gzip.NewReader(bytes.NewReader(raw))
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", path, err)
+	}
+	return io.ReadAll(z)
 }
