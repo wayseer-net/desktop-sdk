@@ -1,4 +1,4 @@
-// Package sdk is everything a Mind's Eye module imports: the module contract, the world-model
+// Package sdk is everything a Wayseer module imports: the module contract, the world-model
 // types a module sends, series and events, option decoding and secrets.
 //
 // A module registers a kind at init. The app makes one instance per config entry of that
