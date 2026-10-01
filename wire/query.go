@@ -14,7 +14,7 @@ func EncodeMetrics(ms []sdk.Metric) *pb.MetricsResponse {
 	return &pb.MetricsResponse{Metrics: mapSlice(ms, func(m sdk.Metric) *pb.Metric {
 		return &pb.Metric{
 			Name: m.Name, Unit: string(m.Unit), Description: m.Description,
-			Kinds: convertStrings[string](m.Kinds), Native: m.Native, Extra: m.Extra,
+			Kinds: convertStrings[string](m.Kinds), Native: m.Native, Extra: m.Extra, Joined: m.Joined,
 		}
 	})}
 }
@@ -24,7 +24,7 @@ func DecodeMetrics(r *pb.MetricsResponse) []sdk.Metric {
 	return mapSlice(r.GetMetrics(), func(m *pb.Metric) sdk.Metric {
 		return sdk.Metric{
 			Name: m.GetName(), Unit: sdk.Unit(m.GetUnit()), Description: m.GetDescription(),
-			Kinds: convertStrings[sdk.Kind](m.GetKinds()), Native: m.GetNative(), Extra: m.GetExtra(),
+			Kinds: convertStrings[sdk.Kind](m.GetKinds()), Native: m.GetNative(), Extra: m.GetExtra(), Joined: m.GetJoined(),
 		}
 	})
 }

@@ -2462,7 +2462,9 @@ type Metric struct {
 	// The module's own expression.
 	Native string `protobuf:"bytes,5,opt,name=native,proto3" json:"native,omitempty"`
 	// Chosen by name rather than opened with its entity.
-	Extra         bool `protobuf:"varint,6,opt,name=extra,proto3" json:"extra,omitempty"`
+	Extra bool `protobuf:"varint,6,opt,name=extra,proto3" json:"extra,omitempty"`
+	// For other modules' entities of kinds, which the module names from its own data.
+	Joined        bool `protobuf:"varint,7,opt,name=joined,proto3" json:"joined,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2535,6 +2537,13 @@ func (x *Metric) GetNative() string {
 func (x *Metric) GetExtra() bool {
 	if x != nil {
 		return x.Extra
+	}
+	return false
+}
+
+func (x *Metric) GetJoined() bool {
+	if x != nil {
+		return x.Joined
 	}
 	return false
 }
@@ -3215,14 +3224,15 @@ const file_mindseye_module_v1_module_proto_rawDesc = "" +
 	"\x04unit\x18\x06 \x01(\tR\x04unitB\a\n" +
 	"\x05value\">\n" +
 	"\tValueList\x121\n" +
-	"\x06values\x18\x01 \x03(\v2\x19.mindseye.module.v1.ValueR\x06values\"\x96\x01\n" +
+	"\x06values\x18\x01 \x03(\v2\x19.mindseye.module.v1.ValueR\x06values\"\xae\x01\n" +
 	"\x06Metric\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
 	"\x04unit\x18\x02 \x01(\tR\x04unit\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x14\n" +
 	"\x05kinds\x18\x04 \x03(\tR\x05kinds\x12\x16\n" +
 	"\x06native\x18\x05 \x01(\tR\x06native\x12\x14\n" +
-	"\x05extra\x18\x06 \x01(\bR\x05extra\"J\n" +
+	"\x05extra\x18\x06 \x01(\bR\x05extra\x12\x16\n" +
+	"\x06joined\x18\a \x01(\bR\x06joined\"J\n" +
 	"\n" +
 	"TimeWindow\x12\x17\n" +
 	"\x04from\x18\x01 \x01(\x12H\x00R\x04from\x88\x01\x01\x12\x13\n" +

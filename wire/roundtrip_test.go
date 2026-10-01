@@ -247,7 +247,7 @@ func TestAConfigWithoutOptionsRoundTrips(t *testing.T) {
 
 func TestMetricsRoundTrip(t *testing.T) {
 	ms := []sdk.Metric{
-		{Name: "cpu.utilisation", Unit: sdk.UnitPercent, Description: "CPU", Kinds: []sdk.Kind{sdk.KindHost, sdk.KindPod}, Native: "rate(x[1m])", Extra: true},
+		{Name: "cpu.utilisation", Unit: sdk.UnitPercent, Description: "CPU", Kinds: []sdk.Kind{sdk.KindHost, sdk.KindPod}, Native: "rate(x[1m])", Extra: true, Joined: true},
 		{Name: "up"},
 	}
 	if got := DecodeMetrics(EncodeMetrics(ms)); !reflect.DeepEqual(got, ms) {

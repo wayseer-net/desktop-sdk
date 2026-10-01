@@ -306,6 +306,8 @@ message Metric {
   string native = 5;
   // Chosen by name rather than opened with its entity.
   bool extra = 6;
+  // For other modules' entities of kinds, which the module names from its own data.
+  bool joined = 7;
 }
 
 message TimeWindow {
