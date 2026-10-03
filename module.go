@@ -2,11 +2,11 @@ package sdk
 
 import (
 	"time"
-	"wayseer/internal/module"
 	"wayseer/pkg/sdk/data"
+	"wayseer/pkg/sdk/module"
 )
 
-// The module contract; see the internal package for each method's rules.
+// The module contract; see wayseer/pkg/sdk/module for each method's rules.
 type (
 	// Module is a data source the app configures once and runs until it stops.
 	Module = module.Module
