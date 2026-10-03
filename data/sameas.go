@@ -2,7 +2,8 @@ package data
 
 import (
 	"sync"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 // SameAsIn links entities through the same_as groups of whatever world reads, remembering each

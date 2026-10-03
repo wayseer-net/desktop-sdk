@@ -4,8 +4,9 @@ import (
 	"slices"
 	"testing"
 	"time"
-	"wayseer/pkg/sdk/data"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/data"
+	"wayseer.dev/sdk/model"
 )
 
 func event(id string, at int64, sev model.Severity, kind string, ent model.EntityRef) model.Event {

@@ -2,7 +2,8 @@ package sdktest
 
 import (
 	"testing"
-	"wayseer/pkg/sdk/secret"
+
+	"wayseer.dev/sdk/secret"
 )
 
 // Keyring makes the keyring hold entries, keyed <service>/<account>, for the rest of the test,

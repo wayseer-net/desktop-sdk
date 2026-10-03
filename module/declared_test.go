@@ -3,8 +3,9 @@ package module
 import (
 	"strings"
 	"testing"
-	"wayseer/pkg/sdk/manifest"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/manifest"
+	"wayseer.dev/sdk/model"
 )
 
 func TestKeepDeclaredSaysWhatItLeavesOut(t *testing.T) {

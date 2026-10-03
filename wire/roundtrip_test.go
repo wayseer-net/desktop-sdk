@@ -8,9 +8,10 @@ import (
 	"testing"
 	"testing/quick"
 	"time"
-	"wayseer/pkg/sdk"
-	"wayseer/pkg/sdk/data"
-	pb "wayseer/pkg/sdk/proto/modulev1"
+
+	"wayseer.dev/sdk"
+	"wayseer.dev/sdk/data"
+	pb "wayseer.dev/sdk/proto/modulev1"
 
 	"go.yaml.in/yaml/v3"
 )

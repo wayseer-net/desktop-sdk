@@ -6,7 +6,8 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 // State is how current a module's data is.

@@ -8,9 +8,10 @@ import (
 	"slices"
 	"strings"
 	"testing"
-	"wayseer/pkg/sdk"
-	pb "wayseer/pkg/sdk/proto/modulev1"
-	"wayseer/pkg/sdk/wire"
+
+	"wayseer.dev/sdk"
+	pb "wayseer.dev/sdk/proto/modulev1"
+	"wayseer.dev/sdk/wire"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

@@ -2,7 +2,8 @@ package wire
 
 import (
 	"fmt"
-	pb "wayseer/pkg/sdk/proto/modulev1"
+
+	pb "wayseer.dev/sdk/proto/modulev1"
 )
 
 // Version is a contract version: a new major breaks compatibility, a new minor only adds.

@@ -9,8 +9,9 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
-	"wayseer/pkg/sdk/model"
-	"wayseer/pkg/sdk/units"
+
+	"wayseer.dev/sdk/model"
+	"wayseer.dev/sdk/units"
 )
 
 // Filter selects entities: any of Kinds (if set), from any of Sources (if set), a status at or

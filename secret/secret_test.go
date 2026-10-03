@@ -4,7 +4,8 @@ import (
 	"errors"
 	"strings"
 	"testing"
-	"wayseer/pkg/sdk/secret"
+
+	"wayseer.dev/sdk/secret"
 )
 
 // canary is the secret the fake keyring holds, so finding it in any error is a leak.

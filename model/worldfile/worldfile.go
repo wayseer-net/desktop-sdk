@@ -13,7 +13,8 @@ import (
 	"os"
 	"slices"
 	"strings"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 // worldLine is one entity, or with From set one edge, of a recorded world. Only string

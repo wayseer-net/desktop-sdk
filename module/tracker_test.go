@@ -6,7 +6,8 @@ import (
 	"strings"
 	"testing"
 	"time"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 func host(native, name string) model.Entity {

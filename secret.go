@@ -6,7 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"wayseer/pkg/sdk/secret"
+
+	"wayseer.dev/sdk/secret"
 )
 
 // Secret is a credential; every way of printing it shows [redacted]. Reveal gives the value, for

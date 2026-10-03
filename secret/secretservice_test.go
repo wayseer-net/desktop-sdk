@@ -10,7 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
-	"wayseer/pkg/sdk/secret"
+
+	"wayseer.dev/sdk/secret"
 
 	"github.com/godbus/dbus/v5"
 )

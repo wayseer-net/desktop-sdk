@@ -6,7 +6,8 @@ import (
 	"reflect"
 	"testing"
 	"testing/quick"
-	"wayseer/pkg/sdk"
+
+	"wayseer.dev/sdk"
 
 	"google.golang.org/protobuf/proto"
 )

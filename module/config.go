@@ -6,7 +6,8 @@ import (
 	"reflect"
 	"slices"
 	"strings"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 
 	"go.yaml.in/yaml/v3"
 )

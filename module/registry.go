@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"strings"
 	"sync"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 // Factory makes an unconfigured module.

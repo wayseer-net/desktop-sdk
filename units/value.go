@@ -3,7 +3,8 @@ package units
 import (
 	"strconv"
 	"strings"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 // AppendValue appends v for reading: a number through its unit, a list item by item, and any

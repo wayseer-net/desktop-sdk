@@ -4,7 +4,8 @@ import (
 	"container/list"
 	"sync"
 	"time"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 // CacheKey identifies a cached series by reference, window instants and step.

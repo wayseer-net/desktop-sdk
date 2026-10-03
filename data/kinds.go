@@ -4,7 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"sync"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 // ErrForeignKind reports an entity whose kind is neither a core kind nor in its module's namespace.

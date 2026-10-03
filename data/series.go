@@ -3,7 +3,8 @@ package data
 import (
 	"fmt"
 	"time"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 // SeriesRef names one metric of one entity; Metric is a canonical name from a module's catalogue.

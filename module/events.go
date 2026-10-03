@@ -2,7 +2,8 @@ package module
 
 import (
 	"slices"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 // EventLog keeps a module's most recent events to answer EventQuery; it is not safe for

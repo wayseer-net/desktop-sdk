@@ -3,8 +3,9 @@ package sdktest
 import (
 	"os"
 	"testing"
-	"wayseer/pkg/sdk"
-	"wayseer/pkg/sdk/model/worldfile"
+
+	"wayseer.dev/sdk"
+	"wayseer.dev/sdk/model/worldfile"
 )
 
 // RecordWorld writes cs's entities and edges, sorted, one JSON line each, so a module's world

@@ -5,9 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"time"
-	"wayseer/pkg/sdk"
-	"wayseer/pkg/sdk/data"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk"
+	"wayseer.dev/sdk/data"
+	"wayseer.dev/sdk/model"
 )
 
 // cancelLimit is how soon Run must return once its context is cancelled.

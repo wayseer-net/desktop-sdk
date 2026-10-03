@@ -15,7 +15,7 @@ const (
 // reservedNamespaces are first-party: every built-in module's kind prefix (plan §4.4).
 var reservedNamespaces = []string{"k8s", "wayseer", "localhost", "prometheus", "sql"}
 
-// coreKinds mirror pkg/sdk/model's core vocabulary; a test there keeps the two equal.
+// coreKinds mirror the model package's core vocabulary; a test there keeps the two equal.
 var coreKinds = []string{
 	"alert", "cluster", "container", "database", "disk", "host", "interface", "node", "person",
 	"pod", "process", "queue", "repo", "service", "table", "team",

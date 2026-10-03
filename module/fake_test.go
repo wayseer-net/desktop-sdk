@@ -3,8 +3,9 @@ package module
 import (
 	"context"
 	"time"
-	"wayseer/pkg/sdk/data"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/data"
+	"wayseer.dev/sdk/model"
 )
 
 // fake is a Module that does nothing, for registry and capability tests.

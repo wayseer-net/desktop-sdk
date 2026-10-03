@@ -2,8 +2,9 @@ package wire_test
 
 import (
 	"fmt"
-	"wayseer/pkg/sdk"
-	"wayseer/pkg/sdk/wire"
+
+	"wayseer.dev/sdk"
+	"wayseer.dev/sdk/wire"
 )
 
 // A module streams a change set in parts; the host joins them and checks the version first.

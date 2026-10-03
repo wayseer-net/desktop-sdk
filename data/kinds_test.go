@@ -5,7 +5,8 @@ import (
 	"errors"
 	"testing"
 	"time"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 func kindEntity(src model.ModuleID, kind model.Kind, native string) model.Entity {

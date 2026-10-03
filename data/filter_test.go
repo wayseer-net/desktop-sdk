@@ -6,7 +6,8 @@ import (
 	"reflect"
 	"strings"
 	"testing"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 func TestParseFilter(t *testing.T) {

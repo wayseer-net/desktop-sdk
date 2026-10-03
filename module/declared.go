@@ -2,8 +2,9 @@ package module
 
 import (
 	"slices"
-	"wayseer/pkg/sdk/manifest"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/manifest"
+	"wayseer.dev/sdk/model"
 )
 
 // Declarer is a module whose signed manifest bounds the actions it may offer (ADR-0010 D7, D8):

@@ -3,8 +3,9 @@ package module
 import (
 	"context"
 	"log/slog"
-	"wayseer/pkg/sdk/data"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/data"
+	"wayseer.dev/sdk/model"
 )
 
 // Module is a Tier 1 data source (PLAN §6.1). The host calls Configure once, then Run, possibly

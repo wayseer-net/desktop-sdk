@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"slices"
 	"time"
-	"wayseer/pkg/sdk"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk"
+	"wayseer.dev/sdk/model"
 )
 
 // queryWindow is the recent window the query checks ask about.

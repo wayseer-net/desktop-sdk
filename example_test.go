@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"os"
 	"time"
-	"wayseer/pkg/sdk"
-	"wayseer/pkg/sdk/sdktest"
+
+	"wayseer.dev/sdk"
+	"wayseer.dev/sdk/sdktest"
 )
 
 // hosts describes a fixed list of hosts named in its options.

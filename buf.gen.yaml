@@ -1,0 +1,9 @@
+# The plugins are pinned in tools/go.mod, so no plugin needs installing.
+version: v2
+plugins:
+  - local: [go, tool, -modfile=tools/go.mod, protoc-gen-go]
+    out: .
+    opt: module=wayseer.dev/sdk
+  - local: [go, tool, -modfile=tools/go.mod, protoc-gen-go-grpc]
+    out: .
+    opt: module=wayseer.dev/sdk

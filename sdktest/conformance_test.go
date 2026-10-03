@@ -7,7 +7,8 @@ import (
 	"strings"
 	"testing"
 	"time"
-	"wayseer/pkg/sdk"
+
+	"wayseer.dev/sdk"
 )
 
 // flaw is one way the fake module can break the contract.

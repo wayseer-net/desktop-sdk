@@ -3,9 +3,10 @@ package sdktest
 import (
 	"context"
 	"sync"
-	"wayseer/pkg/sdk"
-	"wayseer/pkg/sdk/data"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk"
+	"wayseer.dev/sdk/data"
+	"wayseer.dev/sdk/model"
 )
 
 // Frames is a Sink that feeds the app's coalescer, which commits what arrived since the last

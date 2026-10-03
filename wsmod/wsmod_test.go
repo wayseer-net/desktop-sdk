@@ -11,7 +11,8 @@ import (
 	"reflect"
 	"strings"
 	"testing"
-	"wayseer/pkg/sdk/manifest"
+
+	"wayseer.dev/sdk/manifest"
 )
 
 var formats = []Format{TarGz, Zip}

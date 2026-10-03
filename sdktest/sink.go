@@ -6,7 +6,8 @@ import (
 	"sync"
 	"testing"
 	"time"
-	"wayseer/pkg/sdk"
+
+	"wayseer.dev/sdk"
 )
 
 // Sink records what a module sends, snapshot first.

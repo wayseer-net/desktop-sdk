@@ -4,8 +4,9 @@ import (
 	"reflect"
 	"testing"
 	"time"
-	"wayseer/pkg/sdk"
-	pb "wayseer/pkg/sdk/proto/modulev1"
+
+	"wayseer.dev/sdk"
+	pb "wayseer.dev/sdk/proto/modulev1"
 )
 
 func TestActionsRoundTrip(t *testing.T) {

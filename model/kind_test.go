@@ -3,7 +3,8 @@ package model
 import (
 	"slices"
 	"testing"
-	"wayseer/pkg/sdk/manifest"
+
+	"wayseer.dev/sdk/manifest"
 )
 
 func TestKindValidity(t *testing.T) {

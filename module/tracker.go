@@ -8,7 +8,8 @@ import (
 	"slices"
 	"strconv"
 	"time"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 // Tracker remembers what a module has sent, so each poll sends only the difference. It keeps

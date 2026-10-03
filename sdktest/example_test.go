@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	"time"
-	"wayseer/pkg/sdk"
-	"wayseer/pkg/sdk/sdktest"
+
+	"wayseer.dev/sdk"
+	"wayseer.dev/sdk/sdktest"
 )
 
 // clock is a module with one entity, sent once and confirmed each second.

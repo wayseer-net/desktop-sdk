@@ -7,7 +7,8 @@ import (
 	"sync"
 	"testing"
 	"time"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 func testEntity(src model.ModuleID, native string, cpu float64) model.Entity {

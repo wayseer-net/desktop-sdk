@@ -3,7 +3,8 @@ package sdktest
 import (
 	"context"
 	"testing"
-	"wayseer/pkg/sdk"
+
+	"wayseer.dev/sdk"
 )
 
 func TestFramesCommitOncePerFlush(t *testing.T) {

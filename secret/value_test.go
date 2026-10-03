@@ -7,7 +7,8 @@ import (
 	"log/slog"
 	"strings"
 	"testing"
-	"wayseer/pkg/sdk/secret"
+
+	"wayseer.dev/sdk/secret"
 
 	"go.yaml.in/yaml/v3"
 )

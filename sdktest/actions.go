@@ -10,10 +10,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"wayseer/pkg/sdk"
-	"wayseer/pkg/sdk/manifest"
-	"wayseer/pkg/sdk/model"
-	"wayseer/pkg/sdk/module"
+
+	"wayseer.dev/sdk"
+	"wayseer.dev/sdk/manifest"
+	"wayseer.dev/sdk/model"
+	"wayseer.dev/sdk/module"
 )
 
 // checkActions requires a valid catalogue, and Do with a cancelled context to fail promptly.

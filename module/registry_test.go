@@ -4,7 +4,8 @@ import (
 	"context"
 	"slices"
 	"testing"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 func TestRegisterRejectsDuplicatesAndBadKinds(t *testing.T) {

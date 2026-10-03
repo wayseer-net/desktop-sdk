@@ -1,0 +1,16 @@
+# The Tier 2 contract. make proto regenerates proto/modulev1; make check lints it and, from the
+# first tag on, fails on a change that breaks the wire.
+version: v2
+modules:
+  - path: proto
+    excludes:
+      - proto/modulev1
+lint:
+  use:
+    - STANDARD
+  except:
+    # StatusLevel, Severity and Aggregation mirror the SDK, whose zero values are meaningful.
+    - ENUM_ZERO_VALUE_SUFFIX
+breaking:
+  use:
+    - WIRE_JSON

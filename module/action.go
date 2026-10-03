@@ -8,8 +8,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"wayseer/pkg/sdk/manifest"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/manifest"
+	"wayseer.dev/sdk/model"
 )
 
 // Actor is a module whose entities offer actions the owner may run (ADR-0008). The host runs

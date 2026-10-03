@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"sync/atomic"
 	"time"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 // ErrForeign reports a change to something the submitting module does not own.

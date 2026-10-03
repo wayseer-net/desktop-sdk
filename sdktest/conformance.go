@@ -7,8 +7,9 @@ import (
 	"sync"
 	"testing"
 	"time"
-	"wayseer/pkg/sdk"
-	"wayseer/pkg/sdk/data"
+
+	"wayseer.dev/sdk"
+	"wayseer.dev/sdk/data"
 
 	"go.yaml.in/yaml/v3"
 )

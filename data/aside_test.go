@@ -5,7 +5,8 @@ import (
 	"runtime"
 	"testing"
 	"time"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 func asideCoalescer(aside int) (*Coalescer, *[]*model.Snapshot) {

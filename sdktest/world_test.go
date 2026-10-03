@@ -4,7 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-	"wayseer/pkg/sdk"
+
+	"wayseer.dev/sdk"
 )
 
 func TestARecordedWorldLoadsBack(t *testing.T) {

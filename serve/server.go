@@ -6,9 +6,10 @@ import (
 	"os"
 	"runtime/debug"
 	"sync"
-	"wayseer/pkg/sdk"
-	pb "wayseer/pkg/sdk/proto/modulev1"
-	"wayseer/pkg/sdk/wire"
+
+	"wayseer.dev/sdk"
+	pb "wayseer.dev/sdk/proto/modulev1"
+	"wayseer.dev/sdk/wire"
 
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"

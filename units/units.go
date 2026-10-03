@@ -5,7 +5,8 @@ package units
 import (
 	"math"
 	"strconv"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 // Beyond these magnitudes a number shows in scientific notation.

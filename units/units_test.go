@@ -3,7 +3,8 @@ package units
 import (
 	"math"
 	"testing"
-	"wayseer/pkg/sdk/model"
+
+	"wayseer.dev/sdk/model"
 )
 
 var cases = []struct {
