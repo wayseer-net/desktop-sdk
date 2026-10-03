@@ -3,8 +3,8 @@ package sdktest
 import (
 	"context"
 	"sync"
-	"wayseer/internal/data"
 	"wayseer/pkg/sdk"
+	"wayseer/pkg/sdk/data"
 	"wayseer/pkg/sdk/model"
 )
 

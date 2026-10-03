@@ -2,7 +2,7 @@ package sdk
 
 import (
 	"time"
-	"wayseer/internal/data"
+	"wayseer/pkg/sdk/data"
 )
 
 // Series and the queries over them.

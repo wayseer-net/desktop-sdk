@@ -2,8 +2,8 @@ package sdk
 
 import (
 	"time"
-	"wayseer/internal/data"
 	"wayseer/internal/module"
+	"wayseer/pkg/sdk/data"
 )
 
 // The module contract; see the internal package for each method's rules.

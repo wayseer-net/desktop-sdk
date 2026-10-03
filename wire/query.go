@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"math"
 	"time"
-	"wayseer/internal/data"
 	"wayseer/pkg/sdk"
+	"wayseer/pkg/sdk/data"
 	pb "wayseer/pkg/sdk/proto/modulev1"
 )
 

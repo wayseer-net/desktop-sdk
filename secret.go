@@ -6,13 +6,12 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"wayseer/internal/kernel"
-	"wayseer/internal/secret"
+	"wayseer/pkg/sdk/secret"
 )
 
 // Secret is a credential; every way of printing it shows [redacted]. Reveal gives the value, for
 // handing to a client library only.
-type Secret = kernel.Secret
+type Secret = secret.Secret
 
 // SecretOptions name where a secret is kept. Embed them in a module's options with
 // `yaml:",inline"` so the config reads secret_file:, secret_env: or secret_keyring:.
@@ -68,7 +67,7 @@ func (o SecretOptions) Read() (Secret, error) {
 	default:
 		return Secret{}, nil
 	}
-	return kernel.NewSecret(s), nil
+	return secret.New(s), nil
 }
 
 // pathOnly keeps a file error's operation, path and cause, which hold nothing read from the file.
