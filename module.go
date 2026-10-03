@@ -106,9 +106,6 @@ func NotOffered(what string) error { return module.NotOffered(what) }
 // Register adds a module kind to the app; call it from the module package's init.
 func Register(kind string, f Factory) { module.Register(kind, f) }
 
-// RegisterPaid adds a module kind that runs only when a licence key unlocks it.
-func RegisterPaid(kind string, f Factory) { module.RegisterPaid(kind, f) }
-
 // NewEventLog keeps at most n events.
 func NewEventLog(n int) *EventLog { return module.NewEventLog(n) }
 
