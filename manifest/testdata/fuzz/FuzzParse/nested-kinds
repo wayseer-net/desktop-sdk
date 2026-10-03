@@ -1,0 +1,2 @@
+go test fuzz v1
+[]byte("id: acme/tool\nname: Tool\nversion: 0.1.0-rc.1+build.5\ncontract: 1\nnamespace: acme\nos: linux\narch: arm64\nsha256: 0000000000000000000000000000000000000000000000000000000000000000\nkinds: [{kind: acme/a, like: host}]\nactions: [{id: go, title: Go, changes: Goes, kinds: [acme/a]}]\n")
