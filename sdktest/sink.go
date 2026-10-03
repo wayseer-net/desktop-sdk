@@ -21,6 +21,9 @@ func (s *Sink) Snapshot(_ context.Context, cs *sdk.ChangeSet) error { return s.a
 // Delta records cs.
 func (s *Sink) Delta(_ context.Context, cs *sdk.ChangeSet) error { return s.add(cs) }
 
+// Confine accepts any namespace; Sink records kinds, it doesn't check them.
+func (s *Sink) Confine(string, string) error { return nil }
+
 func (s *Sink) add(cs *sdk.ChangeSet) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()

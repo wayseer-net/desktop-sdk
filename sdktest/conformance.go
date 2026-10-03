@@ -175,6 +175,7 @@ type discardSink struct{}
 
 func (discardSink) Snapshot(context.Context, *sdk.ChangeSet) error { return nil }
 func (discardSink) Delta(context.Context, *sdk.ChangeSet) error    { return nil }
+func (discardSink) Confine(string, string) error                   { return nil }
 
 // recorder is the Sink for the session: it submits through a real coalescer and notes violations.
 type recorder struct {
@@ -197,6 +198,12 @@ func (r *recorder) Delta(ctx context.Context, cs *sdk.ChangeSet) error {
 		return r.check(errors.New("the first change set was a Delta, not a Snapshot"))
 	}
 	return r.check(r.co.Submit(ctx, r.name, cs))
+}
+
+// Confine checks the session's kinds as the app does: core kinds and the module's namespace.
+func (r *recorder) Confine(ns, _ string) error {
+	r.co.Confine(r.name, ns)
+	return nil
 }
 
 // note counts a call, returning how many came before it.
