@@ -81,19 +81,29 @@ type Action struct {
 
 // Parse reads a manifest, refusing anything outside the format.
 func Parse(data []byte) (Manifest, error) {
-	if len(data) > MaxSize {
-		return Manifest{}, ErrSize
-	}
-	root, err := document(data)
+	m, lines, err := decode(data, false)
 	if err != nil {
 		return Manifest{}, err
 	}
-	r := reader{lines: map[string]int{}}
-	m, err := r.manifest(root)
+	return m, m.validate(lines)
+}
+
+// Platform is what a package's executable fixes in its manifest.
+type Platform struct{ OS, Arch, SHA256 string }
+
+// Fill reads a manifest whose platform fields may be absent or stale, sets them to p, and
+// returns the manifest's bytes as a package carries them. Errors name the input's lines.
+func Fill(data []byte, p Platform) ([]byte, Manifest, error) {
+	m, lines, err := decode(data, true)
 	if err != nil {
-		return Manifest{}, err
+		return nil, Manifest{}, err
 	}
-	return m, m.validate(r.lines)
+	m.OS, m.Arch, m.SHA256 = p.OS, p.Arch, p.SHA256
+	if err := m.validate(lines); err != nil {
+		return nil, Manifest{}, err
+	}
+	out, err := Marshal(m)
+	return out, m, err
 }
 
 // Marshal writes m as YAML that Parse reads back unchanged, refusing an invalid m.
@@ -108,6 +118,20 @@ func Marshal(m Manifest) ([]byte, error) {
 		return nil, err
 	}
 	return b.Bytes(), enc.Close()
+}
+
+// decode reads a manifest's fields without checking their bounds, noting each one's line.
+func decode(data []byte, filling bool) (Manifest, map[string]int, error) {
+	if len(data) > MaxSize {
+		return Manifest{}, nil, ErrSize
+	}
+	root, err := document(data)
+	if err != nil {
+		return Manifest{}, nil, err
+	}
+	r := reader{lines: map[string]int{}, filling: filling}
+	m, err := r.manifest(root)
+	return m, r.lines, err
 }
 
 // Marketplace checks the fields a marketplace package must carry beyond a developer one.

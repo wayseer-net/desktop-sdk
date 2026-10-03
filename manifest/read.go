@@ -19,7 +19,11 @@ type field struct {
 }
 
 // reader decodes the node tree into a Manifest, noting each field's line for later errors.
-type reader struct{ lines map[string]int }
+// When filling, the platform fields may be absent.
+type reader struct {
+	lines   map[string]int
+	filling bool
+}
 
 func (r *reader) manifest(n *yaml.Node) (Manifest, error) {
 	var m Manifest
@@ -31,9 +35,9 @@ func (r *reader) manifest(n *yaml.Node) (Manifest, error) {
 		"version":        {r.str(&m.Version), true},
 		"contract":       {r.integer(&m.Contract), true},
 		"namespace":      {r.str(&m.Namespace), true},
-		"os":             {r.str(&m.OS), true},
-		"arch":           {r.str(&m.Arch), true},
-		"sha256":         {r.str(&m.SHA256), true},
+		"os":             {r.str(&m.OS), !r.filling},
+		"arch":           {r.str(&m.Arch), !r.filling},
+		"sha256":         {r.str(&m.SHA256), !r.filling},
 		"source":         {r.source(&m.Source), false},
 		"publisher_cert": {r.str(&m.PublisherCert), false},
 		"kinds":          {r.list(maxKinds, func(n *yaml.Node, p string) error { return r.kind(n, p, &m.Kinds) }), false},

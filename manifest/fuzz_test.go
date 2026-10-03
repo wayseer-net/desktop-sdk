@@ -29,3 +29,20 @@ func FuzzParse(f *testing.F) {
 		}
 	})
 }
+
+// FuzzFill checks Fill never panics and gives only bytes Parse reads as the filled manifest.
+func FuzzFill(f *testing.F) {
+	f.Add(example(f))
+	f.Add([]byte(unfilled))
+	f.Add([]byte(unfilled + "os: [x]\n"))
+	f.Fuzz(func(t *testing.T, in []byte) {
+		out, m, err := Fill(in, platformFields)
+		if err != nil {
+			return
+		}
+		again, err := Parse(out)
+		if err != nil || !reflect.DeepEqual(again, m) {
+			t.Fatalf("Fill gave %q, which parses as %+v, %v; want %+v", out, again, err, m)
+		}
+	})
+}
