@@ -37,11 +37,11 @@ func (m Manifest) validate(lines map[string]int) error {
 		path string
 		ok   bool
 	}{
-		{"id", validID(m.ID)},
+		{"id", ValidID(m.ID)},
 		{"name", text(m.Name, maxName)},
 		{"description", m.Description == "" || text(m.Description, maxDescription)},
 		{"homepage", m.Homepage == "" || httpsURL(m.Homepage)},
-		{"version", validVersion(m.Version)},
+		{"version", ValidVersion(m.Version)},
 		{"contract", m.Contract >= 1 && m.Contract <= maxContract},
 		{"namespace", ValidNamespace(m.Namespace)},
 		{"os", platform(m.OS)},
@@ -169,8 +169,8 @@ func (m Manifest) lists(kind string) bool {
 	return false
 }
 
-// validID checks "<publisher>/<name>", each part with a namespace's shape.
-func validID(id string) bool {
+// ValidID reports whether id is "<publisher>/<name>", each part with a namespace's shape.
+func ValidID(id string) bool {
 	pub, name, ok := strings.Cut(id, "/")
 	return ok && ValidNamespace(pub) && ValidNamespace(name)
 }
