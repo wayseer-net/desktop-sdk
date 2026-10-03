@@ -2,7 +2,7 @@ package sdk
 
 import (
 	"time"
-	"wayseer/internal/model"
+	"wayseer/pkg/sdk/model"
 )
 
 // The world-model types a module sends.

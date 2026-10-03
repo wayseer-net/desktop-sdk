@@ -4,8 +4,8 @@ import (
 	"context"
 	"sync"
 	"wayseer/internal/data"
-	"wayseer/internal/model"
 	"wayseer/pkg/sdk"
+	"wayseer/pkg/sdk/model"
 )
 
 // Frames is a Sink that feeds the app's coalescer, which commits what arrived since the last

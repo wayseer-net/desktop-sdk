@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 	"wayseer/internal/data"
-	"wayseer/internal/model"
 	"wayseer/pkg/sdk"
+	"wayseer/pkg/sdk/model"
 )
 
 // cancelLimit is how soon Run must return once its context is cancelled.
