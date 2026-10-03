@@ -4,7 +4,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-lint=$(go tool -n -modfile=tools/go.mod golangci-lint) # built for this machine, whatever GOOS says
+lint=$(GOWORK=off go tool -n -modfile=tools/go.mod golangci-lint) # built for this machine, whatever GOOS says
 echo "==> go test"
 go test -count=1 ./...
 for goos in linux darwin windows; do

@@ -1,5 +1,6 @@
 # Thin wrappers over go commands and scripts/; every target works without make too.
-LINT := go tool -modfile=tools/go.mod golangci-lint
+# The linter is built outside any workspace, which -modfile needs, and lints in whichever is set.
+LINT = $(shell GOWORK=off go tool -n -modfile=tools/go.mod golangci-lint)
 .DEFAULT_GOAL := help
 
 .PHONY: help test lint fmt check proto
