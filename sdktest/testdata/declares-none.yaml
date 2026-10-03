@@ -1,0 +1,5 @@
+id: acme/fake
+name: Fake
+version: 1.0.0
+contract: 1
+namespace: acme

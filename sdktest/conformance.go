@@ -21,6 +21,9 @@ type Case struct {
 	Failing string        // YAML options that cannot reach the source; empty skips that check
 	Timeout time.Duration // for the first snapshot and for errors to surface; default 5 s
 	Observe time.Duration // how long to watch deltas after the snapshot; default 200 ms
+	// Manifest is the module's manifest.yaml, as wayseer dev sign reads it; when set, the actions
+	// check fails on any action, or kind of one, it doesn't declare, as Wayseer leaves those out.
+	Manifest string
 }
 
 // Check names, in the order they run.

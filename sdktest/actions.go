@@ -4,11 +4,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
+	"runtime"
 	"slices"
 	"strconv"
+	"strings"
 	"time"
 	"wayseer/internal/model"
+	"wayseer/internal/module"
 	"wayseer/pkg/sdk"
+	"wayseer/pkg/sdk/manifest"
 )
 
 // checkActions requires a valid catalogue, and Do with a cancelled context to fail promptly.
@@ -23,6 +28,9 @@ func (s *session) checkActions(world *model.Snapshot) error {
 		return fmt.Errorf("%w: offers no actions", ErrSkipped)
 	}
 	if err := sdk.ValidateActions(acts); err != nil {
+		return err
+	}
+	if err := s.c.checkDeclared(acts); err != nil {
 		return err
 	}
 	var errs []error
@@ -65,4 +73,23 @@ func sampleParams(act sdk.Action) map[string]string {
 		}
 	}
 	return out
+}
+
+// checkDeclared fails on any of acts the case's manifest, if it names one, doesn't declare.
+func (c Case) checkDeclared(acts []sdk.Action) error {
+	if c.Manifest == "" {
+		return nil
+	}
+	b, err := os.ReadFile(c.Manifest)
+	if err != nil {
+		return fmt.Errorf("reading the manifest: %w", err)
+	}
+	_, m, err := manifest.Fill(b, manifest.Platform{OS: runtime.GOOS, Arch: runtime.GOARCH, SHA256: strings.Repeat("0", 64)})
+	if err != nil {
+		return fmt.Errorf("%s: %w", c.Manifest, err)
+	}
+	if _, left := module.KeepDeclared(acts, module.DeclaredIn(m)); len(left) > 0 {
+		return fmt.Errorf("the manifest doesn't declare %s, so Wayseer won't offer it", strings.Join(left, ", "))
+	}
+	return nil
 }

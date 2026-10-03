@@ -274,3 +274,23 @@ func TestQueriesNotOfferedAreSkipped(t *testing.T) {
 		}
 	}
 }
+
+func TestTheActionCheckRefusesAnActionTheManifestDoesNotDeclare(t *testing.T) {
+	for file, want := range map[string]string{
+		"testdata/declares-scale.yaml": "",
+		"testdata/declares-none.yaml":  "the manifest doesn't declare scale",
+		"testdata/absent.yaml":         "reading the manifest",
+	} {
+		c := fakeCase(t, sound)
+		c.Manifest = file
+		var got error
+		for _, r := range Check(c) {
+			if r.Check == CheckActions {
+				got = r.Err
+			}
+		}
+		if (want == "" && got != nil) || (want != "" && (got == nil || !strings.Contains(got.Error(), want))) {
+			t.Errorf("%s: %v; want %q", file, got, want)
+		}
+	}
+}
