@@ -13,7 +13,7 @@ const (
 )
 
 // reservedNamespaces are first-party: every built-in module's kind prefix (plan §4.4).
-var reservedNamespaces = []string{"k8s", "wayseer", "localhost", "prometheus", "sql"}
+var reservedNamespaces = []string{"k8s", "wayseer", "localhost", "prometheus", "sql", "proxmox"}
 
 // coreKinds mirror the model package's core vocabulary; a test there keeps the two equal.
 var coreKinds = []string{

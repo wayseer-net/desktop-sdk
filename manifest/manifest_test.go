@@ -197,7 +197,7 @@ func TestNamespaceRule(t *testing.T) {
 			t.Errorf("ValidNamespace(%q) = %v; want %v", ns, got, want)
 		}
 	}
-	for _, ns := range []string{"k8s", "wayseer", "localhost", "prometheus", "sql"} {
+	for _, ns := range []string{"k8s", "wayseer", "localhost", "prometheus", "sql", "proxmox"} {
 		if !Reserved(ns) {
 			t.Errorf("%s isn't reserved", ns)
 		}
