@@ -6,7 +6,8 @@ import (
 )
 
 // Groups are a snapshot's same_as groups, each shown as one entity: its face, the member with
-// the most other edges. A nil Groups leaves every entity its own.
+// the most other edges, though a process gives way to what it runs. A nil Groups leaves every
+// entity its own.
 type Groups struct {
 	world   *Snapshot
 	face    map[EntityRef]EntityRef   // every grouped entity's face
@@ -22,7 +23,7 @@ func GroupsOf(s *Snapshot) *Groups {
 		}
 		group := s.SameAs(r)
 		face := slices.MaxFunc(group, func(a, b EntityRef) int {
-			return cmp.Or(cmp.Compare(s.degree(a), s.degree(b)), cmp.Compare(b, a))
+			return cmp.Or(cmp.Compare(notProcess(s, a), notProcess(s, b)), cmp.Compare(s.degree(a), s.degree(b)), cmp.Compare(b, a))
 		})
 		for _, m := range group {
 			g.face[m] = face
@@ -31,6 +32,14 @@ func GroupsOf(s *Snapshot) *Groups {
 		g.members[face] = append([]EntityRef{face}, slices.Delete(group, i, i+1)...)
 	}
 	return g
+}
+
+// notProcess is 1 unless r is a process, which a group shows by what it runs.
+func notProcess(s *Snapshot, r EntityRef) int {
+	if e, ok := s.Entity(r); ok && e.Kind == KindProcess {
+		return 0
+	}
+	return 1
 }
 
 // degree counts r's edges other than same_as.

@@ -60,3 +60,22 @@ func TestNoGroupsLeaveEveryEntityItsOwn(t *testing.T) {
 		t.Error("nil groups changed an entity")
 	}
 }
+
+func TestAProcessGivesTheFaceToWhatItRuns(t *testing.T) {
+	pid := map[string]Value{"local.pid": Number(4242)}
+	app := mustRef("wayseer", KindProcess, "wayseer")
+	module := Entity{Ref: mustRef("wayseer", "wayseer/module", "sky-provo"), Kind: "wayseer/module", Name: "sky-provo", Source: "wayseer", Attrs: pid}
+	proc := Entity{Ref: mustRef("localhost", KindProcess, "4242"), Kind: KindProcess, Name: "module", Source: "localhost", Attrs: pid}
+	machine := host("localhost", "box", "box", nil)
+	g := GroupsOf(mustApply(t, identityStore(), &ChangeSet{
+		Upserts: []Entity{{Ref: app, Kind: KindProcess, Name: "Wayseer", Source: "wayseer"}, module, proc, machine},
+		Edges: []Edge{
+			{From: module.Ref, To: app, Rel: RelRunsOn},
+			{From: proc.Ref, To: machine.Ref, Rel: RelRunsOn},
+			{From: app, To: proc.Ref, Rel: RelParentOf},
+		},
+	}))
+	if face := g.Face(proc.Ref); face != module.Ref {
+		t.Errorf("face %s; want the module the process runs, though the process has more edges", face)
+	}
+}

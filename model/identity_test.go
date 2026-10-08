@@ -330,3 +330,14 @@ func concat[T any](seqs ...iter.Seq[T]) iter.Seq[T] {
 		}
 	}
 }
+
+func TestIdentityLinksAModuleToItsLocalProcess(t *testing.T) {
+	pid := map[string]Value{"local.pid": Number(4242)}
+	module := Entity{Ref: mustRef("wayseer", "wayseer/module", "aircraft"), Kind: "wayseer/module", Source: "wayseer", Attrs: pid}
+	proc := Entity{Ref: mustRef("localhost", "process", "4242"), Kind: KindProcess, Source: "localhost", Attrs: pid}
+	elsewhere := Entity{Ref: mustRef("prom", "process", "4242"), Kind: KindProcess, Source: "prom", Attrs: map[string]Value{"pid": Number(4242)}}
+	snap := mustApply(t, identityStore(), &ChangeSet{Upserts: []Entity{module, proc, elsewhere}})
+	if got, want := sameAsEdges(snap), []EdgeKey{sameAsKey(module.Ref, proc.Ref)}; !slices.Equal(got, want) {
+		t.Errorf("same_as = %v, want only the module and its local process", got)
+	}
+}

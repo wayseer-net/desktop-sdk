@@ -33,13 +33,15 @@ type IdentityRule struct {
 	Keys  []string // attributes to read; NameKey reads Entity.Name
 }
 
-// DefaultIdentityRules match hosts and nodes by hostname and IP, and anything by cloud instance ID.
+// DefaultIdentityRules match hosts and nodes by hostname and IP, anything by cloud instance ID, and
+// processes on Wayseer's own machine by pid, such as a module's and the localhost module's.
 func DefaultIdentityRules() []IdentityRule {
 	machines := []Kind{KindHost, KindNode}
 	return []IdentityRule{
 		{Name: "hostname", Match: MatchHostname, Kinds: machines, Keys: []string{NameKey, "hostname", "instance", "address"}},
 		{Name: "ip", Match: MatchIP, Kinds: machines, Keys: []string{NameKey, "ip", "instance", "address"}},
 		{Name: "cloud-instance", Match: MatchAttribute, Keys: []string{"cloud.instance_id"}},
+		{Name: "local-process", Match: MatchAttribute, Keys: []string{"local.pid"}},
 	}
 }
 
