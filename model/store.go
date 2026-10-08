@@ -39,7 +39,7 @@ func NewStore(o StoreOptions) *Store {
 		entities: newPmap[EntityRef, *Entity](hashOf), edges: newPmap[EdgeKey, *Edge](hashOf),
 		adj: newPmap[EntityRef, *adjacency](hashOf), byKind: newPmap[Kind, refSet](hashOf),
 		bySource: newPmap[ModuleID, refSet](hashOf), grouped: newPmap[EntityRef, struct{}](hashOf),
-		shape: &shape{},
+		shape: &shape{}, graph: &shape{},
 	})
 	return s
 }
@@ -279,6 +279,9 @@ func (t *txn) commit() *Snapshot {
 	slices.Sort(d.Removed)
 	if len(d.Added)+len(d.Changed)+len(d.Removed)+len(d.EdgesAdded)+len(d.EdgesChanged)+len(d.EdgesRemoved) > 0 {
 		t.next.shape = &shape{since: t.next.version}
+	}
+	if len(d.Added)+len(d.Removed)+len(d.EdgesAdded)+len(d.EdgesRemoved) > 0 {
+		t.next.graph = &shape{since: t.next.version}
 	}
 	snap := t.next // a separate allocation: &t.next would keep the txn, and so every older snapshot, alive
 	return &snap

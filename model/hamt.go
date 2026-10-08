@@ -275,3 +275,99 @@ func (n *hnode[K, V]) each(yield func(K, V) bool) bool {
 	}
 	return true
 }
+
+// appendChanged appends to dst the keys bound in only one of a and b, or to different values.
+func appendChanged[K, V comparable](dst []K, a, b pmap[K, V]) []K {
+	d := differ[K, V]{a: a, b: b, out: dst}
+	d.nodes(a.root, b.root)
+	return d.out
+}
+
+// differ compares two maps, gathering the keys that differ in out.
+type differ[K, V comparable] struct {
+	a, b pmap[K, V]
+	out  []K
+}
+
+// nodes compares x, a's node, with y, b's at the same place, slot by slot while they are
+// alike, and entry by entry against the other map where they are not.
+func (d *differ[K, V]) nodes(x, y *hnode[K, V]) {
+	switch {
+	case x == y:
+		return
+	case x == nil || y == nil || x.collision || y.collision:
+		d.against(x, d.b)
+		d.missing(y, d.a)
+		return
+	}
+	for slots := x.datamap | x.nodemap | y.datamap | y.nodemap; slots != 0; slots &= slots - 1 {
+		d.slot(x, y, slots&-slots)
+	}
+}
+
+// slot compares one slot of x and y. A slot holds one leaf only while no other key shares its
+// place, so leaves there with different keys are each missing from the other map.
+func (d *differ[K, V]) slot(x, y *hnode[K, V], bit uint32) {
+	xn, xl := x.nodemap&bit != 0, x.datamap&bit != 0
+	yn, yl := y.nodemap&bit != 0, y.datamap&bit != 0
+	switch {
+	case xn && yn:
+		d.nodes(x.kids[index(x.nodemap, bit)], y.kids[index(y.nodemap, bit)])
+	case xl && yl:
+		l, m := &x.leaves[index(x.datamap, bit)], &y.leaves[index(y.datamap, bit)]
+		if l.key != m.key {
+			d.out = append(d.out, l.key, m.key)
+		} else if l.val != m.val {
+			d.out = append(d.out, l.key)
+		}
+	default:
+		if xl {
+			d.leafAgainst(&x.leaves[index(x.datamap, bit)], d.b)
+		} else if xn {
+			d.against(x.kids[index(x.nodemap, bit)], d.b)
+		}
+		if yl {
+			d.leafMissing(&y.leaves[index(y.datamap, bit)], d.a)
+		} else if yn {
+			d.missing(y.kids[index(y.nodemap, bit)], d.a)
+		}
+	}
+}
+
+// against gathers the keys under n that m binds to another value, or not at all.
+func (d *differ[K, V]) against(n *hnode[K, V], m pmap[K, V]) {
+	if n == nil {
+		return
+	}
+	for i := range n.leaves {
+		d.leafAgainst(&n.leaves[i], m)
+	}
+	for _, k := range n.kids {
+		d.against(k, m)
+	}
+}
+
+// missing gathers the keys under n that m does not bind.
+func (d *differ[K, V]) missing(n *hnode[K, V], m pmap[K, V]) {
+	if n == nil {
+		return
+	}
+	for i := range n.leaves {
+		d.leafMissing(&n.leaves[i], m)
+	}
+	for _, k := range n.kids {
+		d.missing(k, m)
+	}
+}
+
+func (d *differ[K, V]) leafAgainst(l *leaf[K, V], m pmap[K, V]) {
+	if v, ok := m.get(l.key); !ok || v != l.val {
+		d.out = append(d.out, l.key)
+	}
+}
+
+func (d *differ[K, V]) leafMissing(l *leaf[K, V], m pmap[K, V]) {
+	if _, ok := m.get(l.key); !ok {
+		d.out = append(d.out, l.key)
+	}
+}

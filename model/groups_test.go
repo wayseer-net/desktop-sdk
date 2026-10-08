@@ -79,3 +79,23 @@ func TestAProcessGivesTheFaceToWhatItRuns(t *testing.T) {
 		t.Errorf("face %s; want the module the process runs, though the process has more edges", face)
 	}
 }
+
+// TestGroupsInALaterWorldWithTheSameGraphReadItsStatuses moves db-07's groups to a world where
+// only a status changed, and finds the same faces with the worst member as it is now.
+func TestGroupsInALaterWorldWithTheSameGraphReadItsStatuses(t *testing.T) {
+	s := identityStore()
+	a, b := host("prom", "a", "db-07", nil), host("k8s", "b", "db-07.lan", nil)
+	before := mustApply(t, s, &ChangeSet{Upserts: []Entity{a, b}})
+	b.Status = Status{Level: StatusCrit, Reason: "down"}
+	after := mustApply(t, s, &ChangeSet{Upserts: []Entity{b}})
+	g := GroupsOf(before).In(after)
+	if g.World() != after || g.Face(a.Ref) != GroupsOf(after).Face(a.Ref) {
+		t.Fatalf("world %v, face %s", g.World().Version(), g.Face(a.Ref))
+	}
+	if w := g.Worst(a.Ref); w.Ref != b.Ref || w.Status.Level != StatusCrit {
+		t.Errorf("worst %s at %v; want %s at crit", w.Ref, w.Status.Level, b.Ref)
+	}
+	if (*Groups)(nil).In(after) != nil {
+		t.Error("no groups gained some")
+	}
+}

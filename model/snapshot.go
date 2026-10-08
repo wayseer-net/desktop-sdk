@@ -18,6 +18,7 @@ type Snapshot struct {
 	grouped  refSet // entities with a same_as edge
 	events   eventView
 	shape    *shape // shared by snapshots whose entities and edges are the same
+	graph    *shape // shared by snapshots with the same entity refs and edge keys
 }
 
 // shape marks one set of entities and edges; it is not empty, so each is a distinct pointer.
@@ -26,6 +27,23 @@ type shape struct{ since uint64 }
 // SameShape reports whether s and o have the same entities and edges, as when only events
 // arrived between them. Snapshots from different stores never do.
 func (s *Snapshot) SameShape(o *Snapshot) bool { return s != nil && o != nil && s.shape == o.shape }
+
+// SameGraph reports whether s and o hold the same entities and edges, though their attributes,
+// statuses or weights may differ. Snapshots from different stores never do.
+func (s *Snapshot) SameGraph(o *Snapshot) bool { return s != nil && o != nil && s.graph == o.graph }
+
+// AppendChanged appends to dst, in no order, the entities added, removed or changed since o, an
+// older snapshot from the same store, or every entity when o is nil. It skips the structure the
+// two share, so it costs about what changed.
+func (s *Snapshot) AppendChanged(dst []EntityRef, o *Snapshot) []EntityRef {
+	if o == nil {
+		for r := range s.entities.all() {
+			dst = append(dst, r)
+		}
+		return dst
+	}
+	return appendChanged(dst, o.entities, s.entities)
+}
 
 type refSet = pmap[EntityRef, struct{}]
 

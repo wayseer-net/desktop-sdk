@@ -61,6 +61,15 @@ func (s *Snapshot) degree(r EntityRef) int {
 // World is the snapshot the groups were found in.
 func (g *Groups) World() *Snapshot { return g.world }
 
+// In is g read in s, a snapshot with the same graph as g's world, whose groups are g's though
+// their members' statuses may differ; nil when g is.
+func (g *Groups) In(s *Snapshot) *Groups {
+	if g == nil {
+		return nil
+	}
+	return &Groups{world: s, face: g.face, members: g.members}
+}
+
 // Len is the number of groups.
 func (g *Groups) Len() int {
 	if g == nil {
