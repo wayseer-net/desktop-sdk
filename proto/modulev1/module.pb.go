@@ -664,8 +664,10 @@ type HealthResponse struct {
 	state        protoimpl.MessageState `protogen:"open.v1"`
 	Disconnected bool                   `protobuf:"varint,1,opt,name=disconnected,proto3" json:"disconnected,omitempty"`
 	// The error's message, absent when there is none.
-	Error         *string `protobuf:"bytes,2,opt,name=error,proto3,oneof" json:"error,omitempty"`
-	Note          string  `protobuf:"bytes,3,opt,name=note,proto3" json:"note,omitempty"`
+	Error *string `protobuf:"bytes,2,opt,name=error,proto3,oneof" json:"error,omitempty"`
+	Note  string  `protobuf:"bytes,3,opt,name=note,proto3" json:"note,omitempty"`
+	// How often the module reads its source, in nanoseconds; 0 for unsaid. Contract 1.6.
+	Pace          int64 `protobuf:"varint,4,opt,name=pace,proto3" json:"pace,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -719,6 +721,13 @@ func (x *HealthResponse) GetNote() string {
 		return x.Note
 	}
 	return ""
+}
+
+func (x *HealthResponse) GetPace() int64 {
+	if x != nil {
+		return x.Pace
+	}
+	return 0
 }
 
 type RunRequest struct {
@@ -3089,11 +3098,12 @@ const file_mindseye_module_v1_module_proto_rawDesc = "" +
 	"\x04line\x18\x06 \x01(\x05R\x04line\x12\x16\n" +
 	"\x06column\x18\a \x01(\x05R\x06column\x126\n" +
 	"\acontent\x18\b \x03(\v2\x1c.mindseye.module.v1.YamlNodeR\acontent\"\x0f\n" +
-	"\rHealthRequest\"m\n" +
+	"\rHealthRequest\"\x81\x01\n" +
 	"\x0eHealthResponse\x12\"\n" +
 	"\fdisconnected\x18\x01 \x01(\bR\fdisconnected\x12\x19\n" +
 	"\x05error\x18\x02 \x01(\tH\x00R\x05error\x88\x01\x01\x12\x12\n" +
-	"\x04note\x18\x03 \x01(\tR\x04noteB\b\n" +
+	"\x04note\x18\x03 \x01(\tR\x04note\x12\x12\n" +
+	"\x04pace\x18\x04 \x01(\x03R\x04paceB\b\n" +
 	"\x06_error\"\f\n" +
 	"\n" +
 	"RunRequest\"\x85\x01\n" +

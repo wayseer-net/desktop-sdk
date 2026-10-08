@@ -2,6 +2,7 @@ package wire
 
 import (
 	"errors"
+	"time"
 
 	"wayseer.dev/sdk"
 	pb "wayseer.dev/sdk/proto/modulev1"
@@ -25,7 +26,7 @@ func DecodeInfo(r *pb.InfoResponse) (sdk.Info, []string, Version) {
 
 // EncodeHealth sends an error as its message only.
 func EncodeHealth(h sdk.Health) *pb.HealthResponse {
-	r := &pb.HealthResponse{Disconnected: h.Disconnected, Note: h.Note}
+	r := &pb.HealthResponse{Disconnected: h.Disconnected, Note: h.Note, Pace: int64(h.Pace)}
 	if h.Err != nil {
 		msg := h.Err.Error()
 		r.Error = &msg
@@ -35,7 +36,7 @@ func EncodeHealth(h sdk.Health) *pb.HealthResponse {
 
 // DecodeHealth makes an error from the message.
 func DecodeHealth(r *pb.HealthResponse) sdk.Health {
-	h := sdk.Health{Disconnected: r.GetDisconnected(), Note: r.GetNote()}
+	h := sdk.Health{Disconnected: r.GetDisconnected(), Note: r.GetNote(), Pace: time.Duration(max(r.GetPace(), 0))}
 	if r.Error != nil {
 		h.Err = errors.New(*r.Error)
 	}

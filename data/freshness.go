@@ -29,7 +29,8 @@ func (s State) String() string {
 type Health struct {
 	Disconnected bool
 	Err          error
-	Note         string // a limit worth showing that is not an error, e.g. an optional source missing
+	Note         string        // a limit worth showing that is not an error, e.g. an optional source missing
+	Pace         time.Duration // how often the module reads its source, if slower than freshness assumes
 }
 
 // moduleStatus is one module's freshness inputs.
@@ -100,6 +101,9 @@ func (f *Freshness) update(ids []model.ModuleID, fn func(*moduleStatus)) {
 	f.view.Store(&next)
 }
 
+// pace is the module's declared pace, or its measured one if slower, counted up to maxGap.
+func (s moduleStatus) pace() time.Duration { return max(s.health.Pace, min(s.gap, maxGap)) }
+
 // Health returns id's latest health report.
 func (f *Freshness) Health(id model.ModuleID) Health { return (*f.view.Load())[id].health }
 
@@ -113,7 +117,7 @@ func (f *Freshness) State(id model.ModuleID, now time.Time) State {
 		return FreshError
 	case s.health.Disconnected:
 		return FreshDisconnected
-	case s.lastSeen.IsZero() || now.Sub(s.lastSeen) > max(f.staleAfter, 2*min(s.gap, maxGap)):
+	case s.lastSeen.IsZero() || now.Sub(s.lastSeen) > max(f.staleAfter, 2*s.pace()):
 		return FreshStale
 	}
 	return FreshLive

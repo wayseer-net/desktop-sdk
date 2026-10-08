@@ -82,6 +82,8 @@ message HealthResponse {
   // The error's message, absent when there is none.
   optional string error = 2;
   string note = 3;
+  // How often the module reads its source, in nanoseconds; 0 for unsaid. Contract 1.6.
+  int64 pace = 4;
 }
 
 message RunRequest {}

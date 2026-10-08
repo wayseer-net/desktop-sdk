@@ -100,3 +100,34 @@ func TestFreshnessFollowsEachModulesPace(t *testing.T) {
 		})
 	}
 }
+
+func TestFreshnessWaitsTwoOfADeclaredPace(t *testing.T) {
+	cases := []struct {
+		name      string
+		pace      time.Duration
+		gap       time.Duration // between the last two arrivals; 0 for one arrival so far
+		liveUntil time.Duration
+	}{
+		{"from the first arrival", 5 * time.Minute, 0, 10 * time.Minute},
+		{"beyond five minutes, as declared", time.Hour, 0, 2 * time.Hour},
+		{"a slower measured gap still counts", time.Minute, 3 * time.Minute, 6 * time.Minute},
+		{"below the threshold keeps it", time.Second, 0, 30 * time.Second},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			f := NewFreshness(30 * time.Second)
+			f.SetHealth("m", Health{Pace: c.pace})
+			last := time.Unix(1000, 0)
+			if c.gap > 0 {
+				f.Seen(last.Add(-c.gap), "m")
+			}
+			f.Seen(last, "m")
+			if got := f.State("m", last.Add(c.liveUntil)); got != FreshLive {
+				t.Errorf("at +%v = %v, want live", c.liveUntil, got)
+			}
+			if got := f.State("m", last.Add(c.liveUntil+1)); got != FreshStale {
+				t.Errorf("at +%v = %v, want stale", c.liveUntil+1, got)
+			}
+		})
+	}
+}
