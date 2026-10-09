@@ -19,7 +19,9 @@ import (
 )
 
 // Main serves m to the app that started this process, and returns when the app is done with it.
+// The process exits if the app dies without saying so.
 func Main(m sdk.Module) {
+	go watchParent(os.Getppid, parentPoll, func() { os.Exit(0) })
 	plugin.Serve(&plugin.ServeConfig{
 		HandshakeConfig: Handshake,
 		Plugins:         Plugins(NewServer(m)),
