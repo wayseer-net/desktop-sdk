@@ -68,6 +68,27 @@ var cases = []struct {
 	{0.932, model.UnitRatio, "93.2%"},
 	{1, model.UnitRatio, "100%"},
 
+	// Physical quantities, as sensors send them.
+	{21.46, model.UnitCelsius, "21.5 °C"},
+	{-3.2, model.UnitCelsius, "-3.2 °C"},
+	{0, model.UnitWatts, "0 W"},
+	{0.5, model.UnitWatts, "500 mW"},
+	{1534, model.UnitWatts, "1.53 kW"},
+	{12345, model.UnitWattHours, "12.3 kWh"},
+	{3.3, model.UnitVolts, "3.3 V"},
+	{0.012, model.UnitVolts, "12 mV"},
+	{11000, model.UnitVolts, "11 kV"},
+	{0.25, model.UnitAmperes, "250 mA"},
+	{50, model.UnitHertz, "50 Hz"},
+	{2.4e9, model.UnitHertz, "2.4 GHz"},
+	{350, model.UnitLux, "350 lx"},
+	{54000, model.UnitLux, "54 klx"},
+	{101325, model.UnitPascals, "1013 hPa"},
+	{50, model.UnitPascals, "50 Pa"},
+	{412, model.UnitPPM, "412 ppm"},
+	{12.04, model.UnitMicrogramsPerM3, "12 µg/m³"},
+	{-67, model.UnitDBm, "-67 dBm"},
+
 	{math.NaN(), model.UnitPercent, "–"},
 	{math.Inf(1), model.UnitBytes, "∞"},
 	{math.Inf(-1), model.UnitNone, "-∞"},
@@ -143,6 +164,17 @@ func TestUnitQuantitiesParse(t *testing.T) {
 		{"80%", model.UnitRatio, 0.8, true},
 		{"12k", model.UnitCount, 12000, true},
 		{"3Gbit/s", model.UnitBitsPS, 3e9, true},
+		{"21.5°C", model.UnitCelsius, 21.5, true},
+		{"1.5kW", model.UnitWatts, 1500, true},
+		{"2kWh", model.UnitWattHours, 2000, true},
+		{"230V", model.UnitVolts, 230, true},
+		{"250mA", model.UnitAmperes, 0.25, true},
+		{"2.4GHz", model.UnitHertz, 2.4e9, true},
+		{"1013hPa", model.UnitPascals, 101300, true},
+		{"800ppm", model.UnitPPM, 800, true},
+		{"25µg/m³", model.UnitMicrogramsPerM3, 25, true},
+		{"-70dBm", model.UnitDBm, -70, true},
+		{"5kW", model.UnitVolts, 0, false},
 		{"8GiB", model.UnitSeconds, 0, false},
 		{"8 GiB", model.UnitBytes, 0, false},
 		{"8furlongs", model.UnitBytes, 0, false},
@@ -168,7 +200,10 @@ func TestStepIsTheLastPlaceAppendShows(t *testing.T) {
 		{0.288, model.UnitSeconds, 0.001}, // 288 ms
 		{-3, model.UnitCount, 0.01},
 		{12345.6, model.UnitNone, 1},
-		{999.9, model.UnitCount, 10}, // 1k, to 1.00k
+		{999.9, model.UnitCount, 10},     // 1k, to 1.00k
+		{1534, model.UnitWatts, 10},      // 1.53 kW
+		{101325, model.UnitPascals, 100}, // 1013 hPa
+		{21.46, model.UnitCelsius, 0.1},  // 21.5 °C
 		{2e20, model.UnitNone, 1e18},
 		{0, model.UnitNone, 0},
 		{math.NaN(), model.UnitRatio, 0},

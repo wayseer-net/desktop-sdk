@@ -25,7 +25,7 @@ func TestTheContractCarriesEverySDKField(t *testing.T) {
 		reflect.TypeFor[sdk.Event]():       {"ID", "Entity", "At", "Severity", "Kind", "Message", "Fields", "Source"},
 		reflect.TypeFor[sdk.Info]():        {"Kind", "Version", "Description"},
 		reflect.TypeFor[sdk.Config]():      {"Name", "Line", "Options"},
-		reflect.TypeFor[sdk.Health]():      {"Disconnected", "Err", "Note", "Pace"},
+		reflect.TypeFor[sdk.Health]():      {"Disconnected", "Err", "Note", "Pace", "Catalogue"},
 		reflect.TypeFor[sdk.Metric]():      {"Name", "Unit", "Description", "Kinds", "Native", "Extra", "Joined"},
 		reflect.TypeFor[sdk.SeriesQuery](): {"Entities", "Filter", "Metrics", "Window", "Step", "Agg", "Native", "Top"},
 		reflect.TypeFor[sdk.SeriesRef]():   {"Entity", "Metric"},

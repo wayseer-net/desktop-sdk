@@ -1,6 +1,7 @@
 package units
 
 import (
+	"slices"
 	"strconv"
 	"strings"
 
@@ -44,13 +45,23 @@ const (
 	secondsFamily
 	countFamily
 	percentFamily
+	firstPhysical // each physical unit is a family of its own from here, in physicalUnits' order
 )
 
-// suffixes are the unit suffixes a quantity may end with, and what each multiplies by.
-var suffixes = map[string]struct {
+// physicalUnits are the units of physical quantities; each has its own family.
+var physicalUnits = []model.Unit{
+	model.UnitCelsius, model.UnitWatts, model.UnitWattHours, model.UnitVolts, model.UnitAmperes, model.UnitHertz,
+	model.UnitLux, model.UnitPascals, model.UnitPPM, model.UnitMicrogramsPerM3, model.UnitDBm,
+}
+
+// suffix is what a unit suffix names: its family, and what it multiplies by.
+type suffix struct {
 	fam    family
 	factor float64
-}{
+}
+
+// suffixes are the unit suffixes a quantity may end with.
+var suffixes = map[string]suffix{
 	"B": {bytesFamily, 1}, "KiB": {bytesFamily, 1 << 10}, "MiB": {bytesFamily, 1 << 20},
 	"GiB": {bytesFamily, 1 << 30}, "TiB": {bytesFamily, 1 << 40}, "PiB": {bytesFamily, 1 << 50}, "EiB": {bytesFamily, 1 << 60},
 	"bit": {bitsFamily, 1}, "kbit": {bitsFamily, 1e3}, "Mbit": {bitsFamily, 1e6},
@@ -59,6 +70,20 @@ var suffixes = map[string]struct {
 	"s": {secondsFamily, 1}, "min": {secondsFamily, 60}, "h": {secondsFamily, 3600}, "d": {secondsFamily, 86400},
 	"k": {countFamily, 1e3}, "M": {countFamily, 1e6}, "G": {countFamily, 1e9}, "T": {countFamily, 1e12},
 	"%": {percentFamily, 1},
+}
+
+// init adds each physical unit's suffixes, as Append writes them.
+func init() {
+	for i, u := range physicalUnits {
+		fam := firstPhysical + family(i)
+		if s, ok := scales[u]; ok {
+			for _, p := range s.prefixes {
+				suffixes[strings.TrimSpace(p.suffix)] = suffix{fam, p.factor}
+			}
+			continue
+		}
+		suffixes[strings.TrimSpace(unscaled[u])] = suffix{fam, 1}
+	}
 }
 
 // familyOf is the family of unit u and whether it is a rate; a unit-less number takes any.
@@ -80,6 +105,9 @@ func familyOf(u model.Unit) (family, bool) {
 		return countFamily, true
 	case model.UnitPercent, model.UnitRatio:
 		return percentFamily, false
+	}
+	if i := slices.Index(physicalUnits, u); i >= 0 {
+		return firstPhysical + family(i), false
 	}
 	return anyFamily, true
 }
@@ -106,14 +134,14 @@ func Parse(s string, u model.Unit) (float64, bool) {
 	return applySuffix(n, s[end:], u)
 }
 
-// applySuffix multiplies n by suffix's factor, if suffix is of unit u's family.
-func applySuffix(n float64, suffix string, u model.Unit) (float64, bool) {
+// applySuffix multiplies n by the factor of suffix text, if it is of unit u's family.
+func applySuffix(n float64, text string, u model.Unit) (float64, bool) {
 	fam, rate := familyOf(u)
-	perSec := strings.HasSuffix(suffix, "/s") && suffix != "/s"
+	perSec := strings.HasSuffix(text, "/s") && text != "/s"
 	if perSec {
-		suffix = strings.TrimSuffix(suffix, "/s")
+		text = strings.TrimSuffix(text, "/s")
 	}
-	sf, ok := suffixes[suffix]
+	sf, ok := suffixes[text]
 	switch {
 	case !ok, perSec && !rate, fam != anyFamily && sf.fam != fam:
 		return 0, false

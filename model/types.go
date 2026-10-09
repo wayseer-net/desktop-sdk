@@ -78,9 +78,26 @@ const (
 	UnitSeconds Unit = "seconds"
 	UnitCount   Unit = "count"
 	UnitPerSec  Unit = "per_second"
+
+	// Physical quantities, since contract 1.7; an older app shows them as plain numbers.
+	UnitCelsius         Unit = "celsius"
+	UnitWatts           Unit = "watts"
+	UnitWattHours       Unit = "watt_hours"
+	UnitVolts           Unit = "volts"
+	UnitAmperes         Unit = "amperes"
+	UnitHertz           Unit = "hertz"
+	UnitLux             Unit = "lux"
+	UnitPascals         Unit = "pascals"
+	UnitPPM             Unit = "parts_per_million"
+	UnitMicrogramsPerM3 Unit = "micrograms_per_cubic_metre"
+	UnitDBm             Unit = "decibel_milliwatts"
 )
 
-var knownUnits = []Unit{UnitNone, UnitBytes, UnitBytesPS, UnitBits, UnitBitsPS, UnitPercent, UnitRatio, UnitSeconds, UnitCount, UnitPerSec}
+var knownUnits = []Unit{
+	UnitNone, UnitBytes, UnitBytesPS, UnitBits, UnitBitsPS, UnitPercent, UnitRatio, UnitSeconds, UnitCount, UnitPerSec,
+	UnitCelsius, UnitWatts, UnitWattHours, UnitVolts, UnitAmperes, UnitHertz, UnitLux, UnitPascals, UnitPPM,
+	UnitMicrogramsPerM3, UnitDBm,
+}
 
 // Validate checks that u is one of the known units.
 func (u Unit) Validate() error {

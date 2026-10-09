@@ -667,7 +667,10 @@ type HealthResponse struct {
 	Error *string `protobuf:"bytes,2,opt,name=error,proto3,oneof" json:"error,omitempty"`
 	Note  string  `protobuf:"bytes,3,opt,name=note,proto3" json:"note,omitempty"`
 	// How often the module reads its source, in nanoseconds; 0 for unsaid. Contract 1.6.
-	Pace          int64 `protobuf:"varint,4,opt,name=pace,proto3" json:"pace,omitempty"`
+	Pace int64 `protobuf:"varint,4,opt,name=pace,proto3" json:"pace,omitempty"`
+	// Changes whenever Metrics would answer differently, so the app asks again; 0 for a fixed
+	// catalogue. Contract 1.7.
+	Catalogue     uint64 `protobuf:"varint,5,opt,name=catalogue,proto3" json:"catalogue,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -726,6 +729,13 @@ func (x *HealthResponse) GetNote() string {
 func (x *HealthResponse) GetPace() int64 {
 	if x != nil {
 		return x.Pace
+	}
+	return 0
+}
+
+func (x *HealthResponse) GetCatalogue() uint64 {
+	if x != nil {
+		return x.Catalogue
 	}
 	return 0
 }
@@ -3098,12 +3108,13 @@ const file_mindseye_module_v1_module_proto_rawDesc = "" +
 	"\x04line\x18\x06 \x01(\x05R\x04line\x12\x16\n" +
 	"\x06column\x18\a \x01(\x05R\x06column\x126\n" +
 	"\acontent\x18\b \x03(\v2\x1c.mindseye.module.v1.YamlNodeR\acontent\"\x0f\n" +
-	"\rHealthRequest\"\x81\x01\n" +
+	"\rHealthRequest\"\x9f\x01\n" +
 	"\x0eHealthResponse\x12\"\n" +
 	"\fdisconnected\x18\x01 \x01(\bR\fdisconnected\x12\x19\n" +
 	"\x05error\x18\x02 \x01(\tH\x00R\x05error\x88\x01\x01\x12\x12\n" +
 	"\x04note\x18\x03 \x01(\tR\x04note\x12\x12\n" +
-	"\x04pace\x18\x04 \x01(\x03R\x04paceB\b\n" +
+	"\x04pace\x18\x04 \x01(\x03R\x04pace\x12\x1c\n" +
+	"\tcatalogue\x18\x05 \x01(\x04R\tcatalogueB\b\n" +
 	"\x06_error\"\f\n" +
 	"\n" +
 	"RunRequest\"\x85\x01\n" +

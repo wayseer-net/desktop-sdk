@@ -31,6 +31,7 @@ type Health struct {
 	Err          error
 	Note         string        // a limit worth showing that is not an error, e.g. an optional source missing
 	Pace         time.Duration // how often the module reads its source, if slower than freshness assumes
+	Catalogue    uint64        // changes whenever Metrics would answer differently; 0 for a fixed catalogue
 }
 
 // moduleStatus is one module's freshness inputs.

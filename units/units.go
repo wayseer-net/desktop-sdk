@@ -33,7 +33,26 @@ var (
 	bits  = scale{prefixes: []prefix{{1, " bit"}, {1e3, " kbit"}, {1e6, " Mbit"}, {1e9, " Gbit"}, {1e12, " Tbit"}, {1e15, " Pbit"}}}
 	bytes = scale{prefixes: []prefix{{1, " B"}, {1 << 10, " KiB"}, {1 << 20, " MiB"}, {1 << 30, " GiB"}, {1 << 40, " TiB"}, {1 << 50, " PiB"}, {1 << 60, " EiB"}}}
 	secs  = scale{prefixes: []prefix{{1e-9, " ns"}, {1e-6, " µs"}, {1e-3, " ms"}, {1, " s"}, {60, " min"}, {3600, " h"}, {86400, " d"}}, base: 3}
+
+	watts     = scale{prefixes: []prefix{{1e-3, " mW"}, {1, " W"}, {1e3, " kW"}, {1e6, " MW"}, {1e9, " GW"}}, base: 1}
+	wattHours = scale{prefixes: []prefix{{1, " Wh"}, {1e3, " kWh"}, {1e6, " MWh"}, {1e9, " GWh"}, {1e12, " TWh"}}}
+	volts     = scale{prefixes: []prefix{{1e-3, " mV"}, {1, " V"}, {1e3, " kV"}}, base: 1}
+	amperes   = scale{prefixes: []prefix{{1e-6, " µA"}, {1e-3, " mA"}, {1, " A"}, {1e3, " kA"}}, base: 2}
+	hertz     = scale{prefixes: []prefix{{1, " Hz"}, {1e3, " kHz"}, {1e6, " MHz"}, {1e9, " GHz"}}}
+	lux       = scale{prefixes: []prefix{{1, " lx"}, {1e3, " klx"}}}
+	pascals   = scale{prefixes: []prefix{{1, " Pa"}, {100, " hPa"}}} // weather reads in hPa, four digits whole
 )
+
+// unscaled are the units shown as they are, with a suffix.
+var unscaled = map[model.Unit]string{
+	model.UnitCelsius: " °C", model.UnitPPM: " ppm", model.UnitMicrogramsPerM3: " µg/m³", model.UnitDBm: " dBm",
+}
+
+// scales are the units shown under a prefix.
+var scales = map[model.Unit]*scale{
+	model.UnitWatts: &watts, model.UnitWattHours: &wattHours, model.UnitVolts: &volts, model.UnitAmperes: &amperes,
+	model.UnitHertz: &hertz, model.UnitLux: &lux, model.UnitPascals: &pascals,
+}
 
 // Append appends v with unit u, to three significant digits: "93.2%", "1.5 KiB", "212 ms",
 // "12.3k/s". A value without a unit is never scaled, so ids and ports read as themselves.
@@ -69,7 +88,10 @@ func Append(b []byte, v float64, u model.Unit) []byte {
 	case model.UnitPerSec:
 		return appendScaled(b, a, &si, "/s")
 	}
-	return appendSig(b, a)
+	if s, ok := scales[u]; ok {
+		return appendScaled(b, a, s, "")
+	}
+	return append(appendSig(b, a), unscaled[u]...)
 }
 
 // appendScaled appends a ≥ 0 under the largest prefix it reaches, moving up one when rounding
@@ -112,6 +134,9 @@ func Step(v float64, u model.Unit) float64 {
 		return scaledStep(a, &bits)
 	case model.UnitCount, model.UnitPerSec:
 		return scaledStep(a, &si)
+	}
+	if s, ok := scales[u]; ok {
+		return scaledStep(a, s)
 	}
 	return sigStep(a)
 }

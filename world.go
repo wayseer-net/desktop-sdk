@@ -117,6 +117,18 @@ const (
 	UnitSeconds = model.UnitSeconds
 	UnitCount   = model.UnitCount
 	UnitPerSec  = model.UnitPerSec
+
+	UnitCelsius         = model.UnitCelsius
+	UnitWatts           = model.UnitWatts
+	UnitWattHours       = model.UnitWattHours
+	UnitVolts           = model.UnitVolts
+	UnitAmperes         = model.UnitAmperes
+	UnitHertz           = model.UnitHertz
+	UnitLux             = model.UnitLux
+	UnitPascals         = model.UnitPascals
+	UnitPPM             = model.UnitPPM
+	UnitMicrogramsPerM3 = model.UnitMicrogramsPerM3
+	UnitDBm             = model.UnitDBm
 )
 
 // Why a Resolver finds no one entity.

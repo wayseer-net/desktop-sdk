@@ -177,9 +177,9 @@ func TestLocalTimesArriveInUTC(t *testing.T) {
 }
 
 func TestHealthRoundTrips(t *testing.T) {
-	for _, h := range []sdk.Health{{}, {Disconnected: true}, {Err: errors.New("403 from api"), Note: "no nodes"}, {Pace: 5 * time.Minute}, {Err: errors.New("")}} {
+	for _, h := range []sdk.Health{{}, {Disconnected: true}, {Err: errors.New("403 from api"), Note: "no nodes"}, {Pace: 5 * time.Minute}, {Catalogue: 3}, {Err: errors.New("")}} {
 		got := DecodeHealth(EncodeHealth(h))
-		if got.Disconnected != h.Disconnected || got.Note != h.Note || got.Pace != h.Pace || (got.Err == nil) != (h.Err == nil) ||
+		if got.Disconnected != h.Disconnected || got.Note != h.Note || got.Pace != h.Pace || got.Catalogue != h.Catalogue || (got.Err == nil) != (h.Err == nil) ||
 			(h.Err != nil && got.Err.Error() != h.Err.Error()) {
 			t.Errorf("%+v became %+v", h, got)
 		}

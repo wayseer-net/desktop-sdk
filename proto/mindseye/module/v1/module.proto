@@ -84,6 +84,9 @@ message HealthResponse {
   string note = 3;
   // How often the module reads its source, in nanoseconds; 0 for unsaid. Contract 1.6.
   int64 pace = 4;
+  // Changes whenever Metrics would answer differently, so the app asks again; 0 for a fixed
+  // catalogue. Contract 1.7.
+  uint64 catalogue = 5;
 }
 
 message RunRequest {}
